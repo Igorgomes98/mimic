@@ -1,0 +1,5 @@
+dist/
+node_modules/
+src/schema.gql
+src/metadata.ts
+src/generated/*
