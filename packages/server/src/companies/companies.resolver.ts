@@ -19,17 +19,17 @@ export class CompaniesResolver {
   }
 
   @Query(() => Company, { name: 'company' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.companiesService.findOne(id);
   }
 
   @Mutation(() => Company)
   updateCompany(@Args('updateCompanyInput') updateCompanyInput: UpdateCompanyInput) {
-    return this.companiesService.update(updateCompanyInput.id, updateCompanyInput);
+    return this.companiesService.update(updateCompanyInput);
   }
 
   @Mutation(() => Company)
-  removeCompany(@Args('id', { type: () => Int }) id: number) {
+  removeCompany(@Args('id', { type: () => String }) id: string) {
     return this.companiesService.remove(id);
   }
 }

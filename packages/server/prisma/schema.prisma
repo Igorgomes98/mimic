@@ -17,6 +17,7 @@ datasource db {
 model roles {
   id    String  @id @default(uuid())
   name  String  @unique
+  description String?
   users users[]
 }
 
@@ -26,7 +27,7 @@ model companies {
   email         String         @unique
   phone         String?
   cnpj          String?        @unique
-  address       String?
+  address       Json?
   is_active     Boolean        @default(true)
   created_at    DateTime       @default(now())
   updated_at    DateTime       @default(now())
