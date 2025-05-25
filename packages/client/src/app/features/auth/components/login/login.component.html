@@ -1,0 +1,112 @@
+<!-- src/app/components/login/login.component.html -->
+<div class="login-container">
+  <!-- Seção Lateral Esquerda -->
+  <div class="login-sidebar">
+    <div class="sidebar-content">
+      <div class="logo">
+        <h1>SeuApp</h1>
+      </div>
+      
+      <div class="welcome-text">
+        <h2>Bem-vindo de volta!</h2>
+        <p>Faça login para acessar sua conta e continuar sua jornada conosco.</p>
+      </div>
+      
+      <div class="features">
+        <div class="feature-item">
+          <div class="feature-icon">🚀</div>
+          <span>Performance otimizada</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔒</div>
+          <span>Segurança avançada</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <span>Analytics em tempo real</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção do Formulário -->
+  <div class="login-form-section">
+    <div class="form-container">
+      <div class="form-header">
+        <h2>Entrar</h2>
+        <p>Digite suas credenciais para acessar sua conta</p>
+      </div>
+
+      <form [formGroup]="loginForm" class="login-form">
+        <!-- Campo Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="Digite seu email"
+              [class.error]="email?.invalid && email?.touched">
+            <span class="input-icon">📧</span>
+          </div>
+          <div class="error-message" *ngIf="email?.invalid && email?.touched">
+            <span *ngIf="email?.errors?.['required']">Email é obrigatório</span>
+            <span *ngIf="email?.errors?.['email']">Email inválido</span>
+          </div>
+        </div>
+
+        <!-- Campo Senha -->
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <div class="input-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              placeholder="Digite sua senha"
+              [class.error]="password?.invalid && password?.touched">
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()">
+              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+          <div class="error-message" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">Senha é obrigatória</span>
+            <span *ngIf="password?.errors?.['minlength']">Senha deve ter pelo menos 6 caracteres</span>
+          </div>
+        </div>
+
+        <!-- Opções -->
+        <div class="form-options">
+          <label class="checkbox-wrapper">
+            <input type="checkbox" formControlName="rememberMe">
+            <span class="checkmark"></span>
+            Lembrar de mim
+          </label>
+          <a href="#" class="forgot-password">Esqueceu a senha?</a>
+        </div>
+
+        <!-- Botão Submit -->
+        <button
+          type="button"
+          class="login-button"
+          (click)="onSubmit()"
+          [disabled]="isLoading">
+          <span *ngIf="!isLoading">Entrar</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <div class="spinner"></div>
+            Entrando...
+          </span>
+        </button>
+
+        <!-- Links adicionais -->
+        <div class="form-footer">
+          <p>Não tem uma conta? <a href="#" class="signup-link">Cadastre-se</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
