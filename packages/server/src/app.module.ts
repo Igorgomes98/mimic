@@ -15,6 +15,7 @@ import { SuppliersModule } from './suppliers/suppliers.module';
 import { SalesModule } from './sales/sales.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { RolesModule } from './roles/roles.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RolesModule } from './roles/roles.module';
     SalesModule,
     PurchasesModule,
     RolesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
