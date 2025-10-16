@@ -1,58 +1,84 @@
-# ------------------------------------------------------
-# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
-# ------------------------------------------------------
-
 type AuthResponse {
   access_token: String!
   user: User!
 }
 
 type Company {
-  """Address of the company"""
+  """
+  Address of the company
+  """
   address: JSON
 
-  """CNPJ of the company"""
+  """
+  CNPJ of the company
+  """
   cnpj: String
 
-  """Register a date to create the company"""
+  """
+  Register a date to create the company
+  """
   created_at: DateTime!
 
-  """Email of the company"""
+  """
+  Email of the company
+  """
   email: String!
 
-  """Unique identifier for the company"""
+  """
+  Unique identifier for the company
+  """
   id: ID!
 
-  """Indicates if the company is active"""
+  """
+  Indicates if the company is active
+  """
   is_active: Boolean!
 
-  """Name of the company"""
+  """
+  Name of the company
+  """
   name: String!
 
-  """Phone of the company"""
+  """
+  Phone of the company
+  """
   phone: String
 
-  """Last update date of the company"""
+  """
+  Last update date of the company
+  """
   updated_at: DateTime!
 }
 
 input CreateCompanyInput {
-  """Address of the company"""
+  """
+  Address of the company
+  """
   address: JSON
 
-  """CNPJ of the company"""
+  """
+  CNPJ of the company
+  """
   cnpj: String
 
-  """Email of the company"""
+  """
+  Email of the company
+  """
   email: String!
 
-  """Indicates if the company is active"""
+  """
+  Indicates if the company is active
+  """
   is_active: Boolean! = true
 
-  """Name of the company"""
+  """
+  Name of the company
+  """
   name: String!
 
-  """Phone of the company"""
+  """
+  Phone of the company
+  """
   phone: String
 }
 
@@ -65,25 +91,35 @@ input CreateProductInput {
 }
 
 input CreatePurchaseInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
 input CreateRoleInput {
-  """Description of the role"""
+  """
+  Description of the role
+  """
   description: String!
 
-  """Name of the role"""
+  """
+  Name of the role
+  """
   name: String!
 }
 
 input CreateSaleInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
 input CreateSupplierInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
@@ -146,7 +182,9 @@ type Product {
 }
 
 type Purchase {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
@@ -168,43 +206,63 @@ type Query {
 }
 
 type Role {
-  """Description of the role"""
+  """
+  Description of the role
+  """
   description: String!
 
-  """Unique identifier for the role"""
+  """
+  Unique identifier for the role
+  """
   id: ID!
 
-  """Name of the role"""
+  """
+  Name of the role
+  """
   name: String!
 }
 
 type Sale {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
 type Supplier {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int!
 }
 
 input UpdateCompanyInput {
   address: JSON
 
-  """CNPJ of the company"""
+  """
+  CNPJ of the company
+  """
   cnpj: String
 
-  """Email of the company"""
+  """
+  Email of the company
+  """
   email: String
   id: String!
 
-  """Indicates if the company is active"""
+  """
+  Indicates if the company is active
+  """
   is_active: Boolean = true
 
-  """Name of the company"""
+  """
+  Name of the company
+  """
   name: String
 
-  """Phone of the company"""
+  """
+  Phone of the company
+  """
   phone: String
 }
 
@@ -217,28 +275,38 @@ input UpdateProductInput {
 }
 
 input UpdatePurchaseInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int
   id: Int!
 }
 
 input UpdateRoleInput {
-  """Description of the role"""
+  """
+  Description of the role
+  """
   description: String!
   id: String!
 
-  """Name of the role"""
+  """
+  Name of the role
+  """
   name: String!
 }
 
 input UpdateSaleInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int
   id: Int!
 }
 
 input UpdateSupplierInput {
-  """Example field (placeholder)"""
+  """
+  Example field (placeholder)
+  """
   exampleField: Int
   id: Int!
 }

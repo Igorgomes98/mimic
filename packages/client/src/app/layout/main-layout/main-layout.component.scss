@@ -1,0 +1,52 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.main-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  
+  &.sidebar-collapsed {
+    .main-content {
+      margin-left: $sidebar-collapsed-width;
+    }
+  }
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: $sidebar-width;
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  background-color: $background-light;
+}
+
+.content-area {
+  flex: 1;
+  padding: 84px $spacing-lg $spacing-lg;
+  overflow-y: auto;
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  
+  @include tablet {
+    padding: 74px $spacing-md $spacing-md;
+  }
+}
+
+/* Responsividade */
+@include tablet {
+  .main-layout {
+    &.sidebar-collapsed {
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+}

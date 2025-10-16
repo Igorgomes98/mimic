@@ -1,1 +1,41 @@
-<p>header works!</p>
+<header class="header-container">
+  <div class="header-content">
+    <div class="header-left">
+      <button class="toggle-sidebar" (click)="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="logo">
+        <h1>Zukunfty CRM</h1>
+      </div>
+    </div>
+    
+    <div class="header-right">
+      <div class="search-bar">
+        <input type="text" placeholder="Pesquisar...">
+        <button><i class="fas fa-search"></i></button>
+      </div>
+      
+      <div class="notifications">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </button>
+      </div>
+      
+      <div class="user-profile">
+        <div class="avatar">
+          <img src="assets/images/avatar-placeholder.png" alt="Avatar do usuário" onerror="this.src='https://placehold.co/40x40';">
+        </div>
+        <div class="user-info">
+          <span class="user-name">Admin</span>
+          <span class="user-role">Administrador</span>
+        </div>
+        <div class="dropdown-menu">
+          <button class="dropdown-toggle">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

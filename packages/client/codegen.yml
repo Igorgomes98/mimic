@@ -13,8 +13,8 @@ generates:
         DateTime: string
         Upload: File
       namingConvention:
-        typeNames: pascal-case
-        enumValues: upper-case
+        typeNames: change-case-all#pascalCase
+        enumValues: change-case-all#upperCase
       
   # Gerar serviços Angular Apollo
   src/app/generated/graphql.services.ts:
@@ -24,13 +24,18 @@ generates:
       - typescript-apollo-angular
     config:
       serviceName: 'GQL'
-      serviceProvidedIn: root
+      # serviceProvidedIn: root
       scalars:
         DateTime: string
         Upload: File
       namingConvention:
-        typeNames: pascal-case
-        enumValues: upper-case
+        typeNames: change-case-all#pascalCase
+        enumValues: change-case-all#upperCase
+      avoidOptionals: true
+      skipTypename: false
+      withHooks: false
+      withHOC: false
+      withComponent: false
         
   # Gerar schema introspection (para desenvolvimento)
   src/app/generated/introspection.json:

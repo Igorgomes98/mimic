@@ -1,4 +1,4 @@
-mutation Login($input: LoginInput) {
+mutation Login($input: LoginInput!) {
   login(loginInput: $input) {
     access_token
     user {
