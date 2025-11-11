@@ -2,62 +2,70 @@
   <div class="sidebar-header">
     <div class="logo-container">
       <div class="logo-icon">
-        <i class="fas fa-chart-pie"></i>
+        <span class="logo-text-icon" *ngIf="!isCollapsed">MIMIC</span>
+        <span class="logo-text-icon-small" *ngIf="isCollapsed">M</span>
       </div>
-      <h2 class="logo-text" *ngIf="!isCollapsed">Mimic CRM</h2>
     </div>
-    <button class="collapse-btn" (click)="toggleCollapse()">
-      <i class="fas" [class.fa-angle-left]="!isCollapsed" [class.fa-angle-right]="isCollapsed"></i>
-    </button>
+  </div>
+  
+  <div class="user-section" *ngIf="!isCollapsed">
+    <p class="user-label">Nome Principal</p>
   </div>
   
   <div class="sidebar-content">
     <nav class="sidebar-menu">
       <ul>
         <li>
-          <a routerLink="/dashboard" routerLinkActive="active">
-            <i class="fas fa-tachometer-alt"></i>
+          <a routerLink="/app/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+            <i class="fas fa-chart-line"></i>
             <span *ngIf="!isCollapsed">Dashboard</span>
             <span class="tooltip" *ngIf="isCollapsed">Dashboard</span>
           </a>
         </li>
         <li>
-          <a routerLink="/clientes" routerLinkActive="active">
-            <i class="fas fa-users"></i>
-            <span *ngIf="!isCollapsed">Clientes</span>
-            <span class="tooltip" *ngIf="isCollapsed">Clientes</span>
-          </a>
-        </li>
-        <li>
-          <a routerLink="/vendas" routerLinkActive="active">
+          <a routerLink="/app/vendas" routerLinkActive="active">
             <i class="fas fa-shopping-cart"></i>
             <span *ngIf="!isCollapsed">Vendas</span>
             <span class="tooltip" *ngIf="isCollapsed">Vendas</span>
           </a>
         </li>
         <li>
-          <a routerLink="/produtos" routerLinkActive="active">
+          <a routerLink="/app/compras" routerLinkActive="active">
+            <i class="fas fa-shopping-bag"></i>
+            <span *ngIf="!isCollapsed">Compras</span>
+            <span class="tooltip" *ngIf="isCollapsed">Compras</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/app/produtos" routerLinkActive="active">
             <i class="fas fa-box"></i>
             <span *ngIf="!isCollapsed">Produtos</span>
             <span class="tooltip" *ngIf="isCollapsed">Produtos</span>
           </a>
         </li>
         <li>
-          <a routerLink="/financeiro" routerLinkActive="active">
-            <i class="fas fa-dollar-sign"></i>
-            <span *ngIf="!isCollapsed">Financeiro</span>
-            <span class="tooltip" *ngIf="isCollapsed">Financeiro</span>
+          <a routerLink="/app/estoque" routerLinkActive="active">
+            <i class="fas fa-warehouse"></i>
+            <span *ngIf="!isCollapsed">Estoque</span>
+            <span class="tooltip" *ngIf="isCollapsed">Estoque</span>
           </a>
         </li>
         <li>
-          <a routerLink="/relatorios" routerLinkActive="active">
-            <i class="fas fa-chart-bar"></i>
-            <span *ngIf="!isCollapsed">Relatórios</span>
-            <span class="tooltip" *ngIf="isCollapsed">Relatórios</span>
+          <a routerLink="/app/clientes" routerLinkActive="active">
+            <i class="fas fa-users"></i>
+            <span *ngIf="!isCollapsed">Clientes</span>
+            <span class="tooltip" *ngIf="isCollapsed">Clientes</span>
           </a>
         </li>
         <li>
-          <a routerLink="/configuracoes" routerLinkActive="active">
+          <a routerLink="/app/fornecedores" routerLinkActive="active">
+            <i class="fas fa-truck"></i>
+            <span *ngIf="!isCollapsed">Fornecedores</span>
+            <span class="tooltip" *ngIf="isCollapsed">Fornecedores</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/app/configuracoes" routerLinkActive="active">
             <i class="fas fa-cog"></i>
             <span *ngIf="!isCollapsed">Configurações</span>
             <span class="tooltip" *ngIf="isCollapsed">Configurações</span>
@@ -65,13 +73,5 @@
         </li>
       </ul>
     </nav>
-  </div>
-  
-  <div class="sidebar-footer">
-    <a (click)="logout()">
-      <i class="fas fa-sign-out-alt"></i>
-      <span *ngIf="!isCollapsed">Sair</span>
-      <span class="tooltip" *ngIf="isCollapsed">Sair</span>
-    </a>
   </div>
 </aside>

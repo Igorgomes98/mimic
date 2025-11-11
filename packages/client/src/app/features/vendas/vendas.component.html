@@ -1,0 +1,138 @@
+<div class="vendas-container">
+  <div class="page-header">
+    <div>
+      <h1>Ponto de Venda (PDV)</h1>
+      <p class="subtitle">Sistema de vendas rápido e eficiente</p>
+    </div>
+    <button class="btn-export">
+      <i class="fas fa-file-excel"></i> Importar Excel
+    </button>
+  </div>
+
+  <div class="vendas-grid">
+    <!-- Seção de busca e itens -->
+    <div class="search-section">
+      <div class="search-panel">
+        <h2>Buscar Produtos</h2>
+        <div class="search-input-wrapper">
+          <i class="fas fa-search"></i>
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Digite o nome ou SKU do produto..."
+            [(ngModel)]="searchTerm"
+            (input)="searchProducts()"
+          />
+        </div>
+        
+        <!-- Resultados da busca -->
+        <div class="search-results" *ngIf="filteredProducts.length > 0">
+          <div 
+            class="product-result" 
+            *ngFor="let product of filteredProducts"
+            (click)="addProduct(product)"
+          >
+            <div class="product-result-info">
+              <div class="product-result-name">{{ product.name }}</div>
+              <div class="product-result-price">R$ {{ product.price.toFixed(2) }}</div>
+            </div>
+            <button class="btn-add">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Itens da venda -->
+      <div class="items-panel">
+        <h2>Itens da Venda</h2>
+        <div class="items-list" *ngIf="saleItems.length > 0; else emptyState">
+          <div class="item-row" *ngFor="let item of saleItems; let i = index">
+            <div class="item-info">
+              <div class="item-name">{{ item.name }}</div>
+              <div class="item-details">
+                Quantidade: {{ item.quantity }} x R$ {{ item.price.toFixed(2) }}
+              </div>
+            </div>
+            <div class="item-actions">
+              <span class="item-total">R$ {{ (item.price * item.quantity).toFixed(2) }}</span>
+              <button class="btn-remove" (click)="removeItem(i)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <ng-template #emptyState>
+          <div class="empty-state">
+            <p>Nenhum item adicionado. Busque e adicione produtos acima.</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Seção de fechamento -->
+    <div class="checkout-section">
+      <div class="checkout-panel">
+        <h2>Fechamento da Venda</h2>
+        
+        <div class="form-group">
+          <label>Cliente</label>
+          <select class="form-control" [(ngModel)]="selectedClient">
+            <option value="">Selecione o cliente</option>
+            <option value="cliente1">João Silva</option>
+            <option value="cliente2">Maria Santos</option>
+            <option value="cliente3">Pedro Costa</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Forma de Pagamento</label>
+          <select class="form-control" [(ngModel)]="paymentMethod">
+            <option value="">Selecione</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="cartao">Cartão de Crédito</option>
+            <option value="pix">PIX</option>
+            <option value="boleto">Boleto</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Observações</label>
+          <textarea 
+            class="form-control" 
+            rows="3" 
+            placeholder="Observações sobre a venda (opcional)"
+            [(ngModel)]="observations"
+          ></textarea>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-row">
+            <span>Itens:</span>
+            <span>{{ saleItems.length }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>R$ {{ subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Desconto:</span>
+            <span>R$ {{ discount.toFixed(2) }}</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span>R$ {{ total.toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-cancel" (click)="clearSale()">Cancelar</button>
+          <button class="btn-finalize" (click)="finalizeSale()">
+            <i class="fas fa-shopping-cart"></i> Finalizar Venda
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

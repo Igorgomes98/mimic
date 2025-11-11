@@ -1,0 +1,70 @@
+<div class="clientes-container">
+  <div class="page-header">
+    <div>
+      <h1>Clientes</h1>
+      <p class="subtitle">Gerencie sua base de clientes</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-import" (click)="importExcel()">
+        <i class="fas fa-file-excel"></i> Importar Excel
+      </button>
+      <button class="btn-primary" (click)="addNewClient()">
+        <i class="fas fa-plus"></i> Novo Cliente
+      </button>
+    </div>
+  </div>
+
+  <!-- Busca -->
+  <div class="search-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        placeholder="Buscar por nome, email ou CPF..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+  </div>
+
+  <!-- Tabela de clientes -->
+  <div class="table-container">
+    <table class="clientes-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Telefone</th>
+          <th>CPF</th>
+          <th>Endereço</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let client of filteredClients">
+          <td class="client-name">{{ client.name }}</td>
+          <td>
+            <i class="fas fa-envelope"></i> {{ client.email }}
+          </td>
+          <td>
+            <i class="fas fa-phone"></i> {{ client.phone }}
+          </td>
+          <td>{{ client.cpf }}</td>
+          <td>{{ client.address }}</td>
+          <td class="actions">
+            <button class="btn-icon edit" (click)="editClient(client)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete" (click)="deleteClient(client)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="empty-state" *ngIf="filteredClients.length === 0">
+      <i class="fas fa-users"></i>
+      <p>Nenhum cliente encontrado</p>
+    </div>
+  </div>
+</div>

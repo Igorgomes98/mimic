@@ -1,0 +1,82 @@
+<div class="compras-container">
+  <div class="page-header">
+    <div>
+      <h1>Registrar Nova Compra</h1>
+      <p class="subtitle">Registre a entrada de produtos no estoque</p>
+    </div>
+    <button class="btn-import" (click)="importExcel()">
+      <i class="fas fa-file-excel"></i> Importar Excel
+    </button>
+  </div>
+
+  <div class="compras-grid">
+    <!-- Formulário de compra -->
+    <div class="form-panel">
+      <h2>Informações da Compra</h2>
+      <p class="subtitle-panel">Dados principais da nota fiscal</p>
+      
+      <div class="form-group">
+        <label>Fornecedor</label>
+        <select class="form-control">
+          <option value="">Selecione o fornecedor</option>
+          <option value="dell">Dell Brasil</option>
+          <option value="logitech">Logitech</option>
+          <option value="redragon">Redragon</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Número da Nota Fiscal</label>
+        <input type="text" class="form-control" placeholder="Ex: NF-123456" />
+      </div>
+
+      <div class="form-group">
+        <label>Data da Entrada</label>
+        <input type="date" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea class="form-control" rows="3" placeholder="Observações sobre a compra (opcional)"></textarea>
+      </div>
+
+      <h3>Itens da Compra</h3>
+      <p class="subtitle-panel">Adicione os produtos e quantidades</p>
+      
+      <div class="items-section">
+        <p class="empty-message">Nenhum item adicionado. Clique em "Adicionar Item" para começar.</p>
+        <button class="btn-add-item">
+          <i class="fas fa-plus"></i> Adicionar Item
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumo financeiro -->
+    <div class="summary-panel">
+      <div class="summary-icon">
+        <i class="fas fa-shopping-bag"></i>
+      </div>
+      
+      <h2>Resumo Financeiro</h2>
+      <p class="subtitle-panel">Total da compra</p>
+      
+      <div class="summary-box">
+        <div class="summary-row">
+          <span>Itens:</span>
+          <span>0</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>R$ 0,00</span>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-cancel">Cancelar</button>
+        <button class="btn-confirm">
+          <i class="fas fa-check"></i> Confirmar Entrada no Estoque
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

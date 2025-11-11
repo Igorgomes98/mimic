@@ -1,0 +1,156 @@
+<div class="produtos-container">
+  <div class="page-header">
+    <div>
+      <h1>Produtos</h1>
+      <p class="subtitle">Gerencie seu catálogo de produtos</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-import" (click)="importExcel()">
+        <i class="fas fa-file-excel"></i> Importar Excel
+      </button>
+      <button class="btn-primary" (click)="addNewProduct()">
+        <i class="fas fa-plus"></i> Novo Produto
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        placeholder="Buscar por nome ou SKU..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+    
+    <div class="filter-group">
+      <select class="filter-select" [(ngModel)]="selectedSupplier">
+        <option value="">Todos os Fornecedores</option>
+        <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+          {{ supplier.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabela de produtos -->
+  <div class="table-container">
+    <div *ngIf="loading" class="loading-state">
+      <p>Carregando produtos...</p>
+    </div>
+    
+    <table class="products-table" *ngIf="!loading">
+      <thead>
+        <tr>
+          <th>Nome do Produto</th>
+          <th>SKU</th>
+          <th>Preço de Venda</th>
+          <th>Fornecedor</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts">
+          <td class="product-name">{{ product.name }}</td>
+          <td>{{ product.sku || '-' }}</td>
+          <td class="price">R$ {{ product.price }}</td>
+          <td>{{ product.supplier?.name || 'Sem fornecedor' }}</td>
+          <td>
+            <span class="status-badge" [class.active]="product.is_active" [class.inactive]="!product.is_active">
+              {{ product.is_active ? 'Ativo' : 'Inativo' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn-icon edit" (click)="editProduct(product)">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon delete" (click)="deleteProduct(product)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="empty-state" *ngIf="!loading && filteredProducts.length === 0">
+      <i class="fas fa-box-open"></i>
+      <p>Nenhum produto encontrado</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Criar/Editar Produto -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditMode ? 'Editar Produto' : 'Novo Produto' }}</h2>
+      <button class="btn-close" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nome do Produto *</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="productForm.name"
+          placeholder="Ex: Notebook Dell"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>SKU</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="productForm.sku"
+          placeholder="Ex: NB-001"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Preço *</label>
+        <input 
+          type="number" 
+          class="form-control" 
+          [(ngModel)]="productForm.price"
+          placeholder="0.00"
+          step="0.01"
+          min="0"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Fornecedor</label>
+        <select class="form-control" [(ngModel)]="productForm.supplier_id">
+          <option value="">Selecione um fornecedor</option>
+          <option *ngFor="let supplier of suppliers" [value]="supplier.id">
+            {{ supplier.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea 
+          class="form-control" 
+          rows="3"
+          [(ngModel)]="productForm.description"
+          placeholder="Descrição do produto (opcional)"
+        ></textarea>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">Cancelar</button>
+      <button class="btn-save" (click)="saveProduct()">
+        {{ isEditMode ? 'Atualizar' : 'Criar' }}
+      </button>
+    </div>
+  </div>
+</div>

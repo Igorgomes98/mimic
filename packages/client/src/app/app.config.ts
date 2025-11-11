@@ -1,19 +1,17 @@
-import { ApplicationConfig, mergeApplicationConfig } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
-import { apolloProviders } from './apollo.config';
 import { routes } from './app.routes';
+// import { authInterceptor } from './core/interceptors/auth.interceptor';
 
-// Base application config
-const baseConfig: ApplicationConfig = {
+// Application config
+export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
-    provideClientHydration(),
-    ...apolloProviders,
+    provideHttpClient(
+      // withInterceptors([authInterceptor]) // Desabilitado temporariamente
+    ),
+    provideClientHydration()
   ]
 };
-
-// Export the merged configuration
-export const appConfig: ApplicationConfig = baseConfig;

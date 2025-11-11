@@ -1,8 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginGQL, LoginInput } from '../../generated/graphql.services';
-import { tap, map, catchError } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { ApiService } from '../../core/services/api.service';
+
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,18 +25,17 @@ export class AuthService {
   private readonly TOKEN_KEY = 'access_token';
 
   constructor(
-    private loginGQL: LoginGQL,
+    private apiService: ApiService,
     private router: Router
   ) {}
 
-  login(input: LoginInput) {
-    return this.loginGQL.mutate({ input }).pipe(
-      tap(({ data }) => {
-        if (data?.login?.access_token) {
-          localStorage.setItem(this.TOKEN_KEY, data.login.access_token);
+  login(input: LoginInput): Observable<LoginResponse | null> {
+    return this.apiService.post<LoginResponse>('auth/login', input).pipe(
+      tap((response) => {
+        if (response?.access_token) {
+          localStorage.setItem(this.TOKEN_KEY, response.access_token);
         }
       }),
-      map(({ data }) => data?.login),
       catchError(error => {
         console.error('Login error:', error);
         return of(null);

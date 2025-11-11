@@ -1,208 +1,139 @@
 <div class="dashboard-container">
   <div class="page-header">
-    <h1>Dashboard</h1>
-    <div class="date-display">
-      <i class="fas fa-calendar"></i>
-      <span>{{ currentDate | date: 'dd/MM/yyyy' }}</span>
+    <div>
+      <h1>Dashboard</h1>
+      <p class="subtitle">Visão geral de seu negócio</p>
     </div>
   </div>
 
-  <!-- Cards de resumo -->
-  <div class="summary-cards">
-    <div class="card">
-      <div class="card-icon sales">
-        <i class="fas fa-dollar-sign"></i>
+  <!-- Cards de métricas -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-icon">
+          <i class="fas fa-dollar-sign"></i>
+        </span>
+        <span class="metric-label">Faturamento do Mês</span>
       </div>
-      <div class="card-content">
-        <h3>Vendas Totais</h3>
-        <p class="value">{{ salesSummary.totalSales }}</p>
-        <p class="trend positive">
-          <i class="fas fa-arrow-up"></i> {{ salesSummary.monthlyGrowth }}
-        </p>
-      </div>
+      <div class="metric-value">{{ metrics.billing.value }}</div>
+      <div class="metric-change positive">{{ metrics.billing.change }}</div>
     </div>
 
-    <div class="card">
-      <div class="card-icon orders">
-        <i class="fas fa-shopping-cart"></i>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-icon">
+          <i class="fas fa-shopping-cart"></i>
+        </span>
+        <span class="metric-label">Total em Compras</span>
       </div>
-      <div class="card-content">
-        <h3>Total de Pedidos</h3>
-        <p class="value">{{ salesSummary.totalOrders }}</p>
-        <p class="sub-text">Ticket médio: {{ salesSummary.avgTicket }}</p>
-      </div>
+      <div class="metric-value">{{ metrics.purchases.value }}</div>
+      <div class="metric-change positive">{{ metrics.purchases.change }}</div>
     </div>
 
-    <div class="card">
-      <div class="card-icon customers">
-        <i class="fas fa-users"></i>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-icon">
+          <i class="fas fa-chart-line"></i>
+        </span>
+        <span class="metric-label">Lucro do Mês</span>
       </div>
-      <div class="card-content">
-        <h3>Clientes Ativos</h3>
-        <p class="value">742</p>
-        <p class="trend positive">
-          <i class="fas fa-arrow-up"></i> 8.3%
-        </p>
-      </div>
+      <div class="metric-value">{{ metrics.profit.value }}</div>
+      <div class="metric-change positive">{{ metrics.profit.change }}</div>
     </div>
 
-    <div class="card">
-      <div class="card-icon products">
-        <i class="fas fa-box"></i>
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-icon">
+          <i class="fas fa-percent"></i>
+        </span>
+        <span class="metric-label">Margem de Lucro Média</span>
       </div>
-      <div class="card-content">
-        <h3>Produtos</h3>
-        <p class="value">152</p>
-        <p class="sub-text">12 com estoque baixo</p>
-      </div>
+      <div class="metric-value">{{ metrics.margin.value }}</div>
+      <div class="metric-change positive">{{ metrics.margin.change }}</div>
     </div>
   </div>
 
   <div class="dashboard-grid">
-    <!-- Gráfico de vendas -->
+    <!-- Gráfico Vendas vs Compras -->
     <div class="dashboard-panel chart-panel">
       <div class="panel-header">
-        <h2>Vendas Mensais</h2>
-        <div class="panel-actions">
-          <button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button>
-        </div>
+        <h2>Vendas vs Compras (Últimos 30 dias)</h2>
       </div>
       <div class="panel-content">
         <div class="chart-container">
-          <!-- Simulação visual do gráfico (na implementação real seria um componente de gráfico) -->
           <div class="mock-chart">
-            <div class="chart-bars">
-              <ng-container *ngFor="let value of monthlySalesData.values; let i = index">
-                <div class="chart-bar" [style.height]="(value / 35000) * 100 + '%'" [attr.data-month]="monthlySalesData.months[i]">
-                  <div class="bar-tooltip">{{ monthlySalesData.months[i] }}: R$ {{ value.toLocaleString('pt-BR') }}</div>
+            <div class="chart-bars-group">
+              <ng-container *ngFor="let label of chartData.labels; let i = index">
+                <div class="bar-group">
+                  <div class="bar sales-bar" [style.height]="(chartData.sales[i] / 5000) * 100 + '%'">
+                    <span class="bar-label">{{ chartData.sales[i] }}</span>
+                  </div>
+                  <div class="bar purchases-bar" [style.height]="(chartData.purchases[i] / 5000) * 100 + '%'">
+                    <span class="bar-label">{{ chartData.purchases[i] }}</span>
+                  </div>
                 </div>
               </ng-container>
             </div>
             <div class="chart-labels">
-              <span *ngFor="let month of monthlySalesData.months">{{ month }}</span>
+              <span *ngFor="let label of chartData.labels">{{ label }}</span>
+            </div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <span class="legend-color sales"></span>
+                <span>Vendas</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color purchases"></span>
+                <span>Compras</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Produtos mais vendidos -->
+    <!-- Produtos com estoque baixo -->
     <div class="dashboard-panel">
       <div class="panel-header">
-        <h2>Produtos Mais Vendidos</h2>
-        <div class="panel-actions">
-          <button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button>
-        </div>
+        <h2><i class="fas fa-exclamation-triangle warning-icon"></i> Produtos com Estoque Baixo</h2>
       </div>
       <div class="panel-content">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Vendas</th>
-              <th>Receita</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let product of topProducts">
-              <td>{{ product.name }}</td>
-              <td>{{ product.sales }}</td>
-              <td>{{ product.revenue }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="low-stock-list">
+          <div class="low-stock-item" *ngFor="let product of lowStockProducts">
+            <div class="product-info">
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-sku">{{ product.sku }}</div>
+            </div>
+            <div class="stock-badge">{{ product.stock }} unidades</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Vendas recentes -->
+    <!-- Últimas Vendas -->
     <div class="dashboard-panel recent-sales-panel">
       <div class="panel-header">
-        <h2>Vendas Recentes</h2>
-        <div class="panel-actions">
-          <button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button>
-        </div>
+        <h2>Últimas Vendas</h2>
       </div>
       <div class="panel-content">
         <table class="data-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Cliente</th>
-              <th>Produto</th>
               <th>Data</th>
               <th>Valor</th>
-              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let sale of recentSales">
+              <td>{{ sale.id }}</td>
               <td>{{ sale.customer }}</td>
-              <td>{{ sale.product }}</td>
-              <td>{{ sale.date | date: 'dd/MM/yyyy' }}</td>
+              <td>{{ sale.date }}</td>
               <td>{{ sale.value }}</td>
-              <td>
-                <span class="status-badge" [ngClass]="{
-                  'status-delivered': sale.status === 'Entregue',
-                  'status-processing': sale.status === 'Processando',
-                  'status-transit': sale.status === 'Em trânsito',
-                  'status-canceled': sale.status === 'Cancelado'
-                }">{{ sale.status }}</span>
-              </td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="panel-footer">
-        <button class="btn-outline">Ver todas as vendas</button>
-      </div>
-    </div>
-
-    <!-- Atividades recentes -->
-    <div class="dashboard-panel">
-      <div class="panel-header">
-        <h2>Atividades Recentes</h2>
-        <div class="panel-actions">
-          <button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button>
-        </div>
-      </div>
-      <div class="panel-content">
-        <div class="activity-feed">
-          <div class="activity-item">
-            <div class="activity-icon success">
-              <i class="fas fa-check"></i>
-            </div>
-            <div class="activity-content">
-              <p class="activity-text"><strong>Pedido #12345</strong> foi entregue com sucesso</p>
-              <p class="activity-time">há 15 minutos</p>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon info">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="activity-content">
-              <p class="activity-text"><strong>Maria Oliveira</strong> fez um novo cadastro</p>
-              <p class="activity-time">há 42 minutos</p>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon warning">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="activity-content">
-              <p class="activity-text"><strong>Produto X</strong> está com estoque baixo</p>
-              <p class="activity-time">há 1 hora</p>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon primary">
-              <i class="fas fa-shopping-cart"></i>
-            </div>
-            <div class="activity-content">
-              <p class="activity-text"><strong>Novo pedido #12346</strong> foi criado</p>
-              <p class="activity-time">há 2 horas</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>

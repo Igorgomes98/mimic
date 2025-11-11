@@ -1,0 +1,105 @@
+<div class="estoque-container">
+  <div class="page-header">
+    <div>
+      <h1>Controle de Estoque</h1>
+      <p class="subtitle">Visualize e gerencie seu inventário</p>
+    </div>
+    <button class="btn-import" (click)="importExcel()">
+      <i class="fas fa-file-excel"></i> Importar Excel
+    </button>
+  </div>
+
+  <!-- Métricas -->
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-label">Valor Total do Estoque</div>
+        <div class="metric-value">R$ {{ totalStockValue.toLocaleString('pt-BR', {minimumFractionDigits: 2}) }}</div>
+        <div class="metric-subtitle">Custo médio dos produtos em estoque</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">
+        <i class="fas fa-box"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-label">Total de Itens</div>
+        <div class="metric-value">{{ totalItems }} un.</div>
+        <div class="metric-subtitle">3 produtos diferentes</div>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon green">
+        <i class="fas fa-percent"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-label">Margem Média</div>
+        <div class="metric-value green">{{ avgMargin.toFixed(1) }}%</div>
+        <div class="metric-subtitle">Lucro médio sobre o custo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros e tabela -->
+  <div class="table-section">
+    <div class="filters-bar">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          placeholder="Buscar por nome ou SKU..."
+          [(ngModel)]="searchTerm"
+        />
+      </div>
+      
+      <select class="sort-select" [(ngModel)]="sortBy">
+        <option value="">Ordenar por</option>
+        <option value="name">Nome</option>
+        <option value="quantity">Quantidade</option>
+        <option value="value">Valor</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <table class="estoque-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>SKU</th>
+            <th>Quantidade</th>
+            <th>Custo Médio</th>
+            <th>Preço de Venda</th>
+            <th>Valor em Estoque</th>
+            <th>Lucro Unitário</th>
+            <th>Margem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredItems">
+            <td class="product-name">{{ item.product }}</td>
+            <td>{{ item.sku }}</td>
+            <td>
+              <span class="quantity-badge" [class.low]="item.quantity < 10">
+                {{ item.quantityLabel }}
+              </span>
+            </td>
+            <td>R$ {{ item.avgCost.toFixed(2) }}</td>
+            <td>R$ {{ item.salePrice.toFixed(2) }}</td>
+            <td class="stock-value">R$ {{ item.stockValue.toLocaleString('pt-BR', {minimumFractionDigits: 2}) }}</td>
+            <td class="profit">R$ {{ item.unitProfit.toFixed(2) }}</td>
+            <td>
+              <span class="margin-badge" [class.high]="item.margin > 30">
+                {{ item.margin.toFixed(1) }}%
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
