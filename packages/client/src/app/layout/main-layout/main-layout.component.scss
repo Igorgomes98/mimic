@@ -18,6 +18,69 @@
   }
 }
 
+.top-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  
+  .header-left {
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+    }
+  }
+  
+  .header-right {
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      
+      .user-details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        
+        .user-name {
+          font-weight: 600;
+          color: #1e293b;
+          font-size: 0.875rem;
+        }
+        
+        .user-company {
+          font-size: 0.75rem;
+          color: #64748b;
+        }
+      }
+      
+      .btn-logout {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        background-color: #fee2e2;
+        color: #991b1b;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        
+        &:hover {
+          background-color: #fecaca;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
+
 .content-area {
   flex: 1;
   overflow-y: auto;

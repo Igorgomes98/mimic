@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductsService, Product } from '../../core/services/products.service';
 import { SuppliersService, Supplier } from '../../core/services/suppliers.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-produtos',
@@ -35,14 +36,16 @@ export class ProdutosComponent implements OnInit {
 
   constructor(
     private productsService: ProductsService,
-    private suppliersService: SuppliersService
+    private suppliersService: SuppliersService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadProducts();
     this.loadSuppliers();
-    // TODO: Pegar company_id do usuário logado
-    this.productForm.company_id = 'temp-company-id';
+    // Pegar company_id do usuário logado
+    const companyId = this.authService.getCompanyId();
+    this.productForm.company_id = companyId || '';
   }
 
   loadProducts(): void {

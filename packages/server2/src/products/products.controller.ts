@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('products')
 @Controller('products')
-// @UseGuards(JwtAuthGuard) // Temporariamente desabilitado para testes
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

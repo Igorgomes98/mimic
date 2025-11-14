@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('suppliers')
 @Controller('suppliers')
-// @UseGuards(JwtAuthGuard) // Temporariamente desabilitado para testes
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}

@@ -2,6 +2,24 @@
   <app-sidebar></app-sidebar>
   
   <div class="main-content">
+    <!-- Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <h2 class="page-title">Sistema Mimic</h2>
+      </div>
+      <div class="header-right">
+        <div class="user-info" *ngIf="currentUser">
+          <div class="user-details">
+            <span class="user-name">{{ currentUser.name }}</span>
+            <span class="user-company" *ngIf="currentUser.company">{{ currentUser.company.name }}</span>
+          </div>
+          <button class="btn-logout" (click)="logout()" title="Sair">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+    
     <main class="content-area">
       <router-outlet></router-outlet>
     </main>

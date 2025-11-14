@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SuppliersService, Supplier } from '../../core/services/suppliers.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-fornecedores',
@@ -29,12 +30,16 @@ export class FornecedoresComponent implements OnInit {
     company_id: '' // Será preenchido com o ID da empresa do usuário logado
   };
 
-  constructor(private suppliersService: SuppliersService) {}
+  constructor(
+    private suppliersService: SuppliersService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadSuppliers();
-    // TODO: Pegar company_id do usuário logado
-    this.supplierForm.company_id = 'temp-company-id';
+    // Pegar company_id do usuário logado
+    const companyId = this.authService.getCompanyId();
+    this.supplierForm.company_id = companyId || '';
   }
 
   loadSuppliers(): void {

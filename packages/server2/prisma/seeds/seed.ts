@@ -1,10 +1,28 @@
 import * as bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
+import { randomUUID } from 'crypto';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Iniciando seeds...');
+  
+  // Gerar UUIDs para todas as entidades
+  const uuids = {
+    subscription1: randomUUID(),
+    subscription2: randomUUID(),
+    supplier1: randomUUID(),
+    supplier2: randomUUID(),
+    supplier3: randomUUID(),
+    customer1: randomUUID(),
+    customer2: randomUUID(),
+    customer3: randomUUID(),
+    purchase1: randomUUID(),
+    purchase2: randomUUID(),
+    sale1: randomUUID(),
+    sale2: randomUUID(),
+    sale3: randomUUID(),
+  };
 
   // 1. Criar Roles
   console.log('Criando roles...');
@@ -137,10 +155,10 @@ async function main() {
   // 4. Criar Subscriptions
   console.log('Criando assinaturas...');
   await prisma.subscriptions.upsert({
-    where: { id: 'sub1' },
+    where: { id: uuids.subscription1 },
     update: {},
     create: {
-      id: 'sub1',
+      id: uuids.subscription1,
       company_id: company1.id,
       plan_name: 'Premium',
       status: 'active',
@@ -149,10 +167,10 @@ async function main() {
   });
 
   await prisma.subscriptions.upsert({
-    where: { id: 'sub2' },
+    where: { id: uuids.subscription2 },
     update: {},
     create: {
-      id: 'sub2',
+      id: uuids.subscription2,
       company_id: company2.id,
       plan_name: 'Basic',
       status: 'active',
@@ -163,10 +181,10 @@ async function main() {
   // 5. Criar Suppliers
   console.log('Criando fornecedores...');
   const supplier1 = await prisma.suppliers.upsert({
-    where: { id: 'supplier1' },
+    where: { id: uuids.supplier1 },
     update: {},
     create: {
-      id: 'supplier1',
+      id: uuids.supplier1,
       company_id: company1.id,
       name: 'TechSupply Distribuidora',
       email: 'vendas@techsupply.com.br',
@@ -178,10 +196,10 @@ async function main() {
   });
 
   const supplier2 = await prisma.suppliers.upsert({
-    where: { id: 'supplier2' },
+    where: { id: uuids.supplier2 },
     update: {},
     create: {
-      id: 'supplier2',
+      id: uuids.supplier2,
       company_id: company1.id,
       name: 'InfoParts Brasil',
       email: 'contato@infoparts.com.br',
@@ -193,10 +211,10 @@ async function main() {
   });
 
   const supplier3 = await prisma.suppliers.upsert({
-    where: { id: 'supplier3' },
+    where: { id: uuids.supplier3 },
     update: {},
     create: {
-      id: 'supplier3',
+      id: uuids.supplier3,
       company_id: company2.id,
       name: 'Atacado Office',
       email: 'pedidos@atacadooffice.com.br',
@@ -276,10 +294,10 @@ async function main() {
   // 7. Criar Customers
   console.log('Criando clientes...');
   const customer1 = await prisma.customers.upsert({
-    where: { id: 'customer1' },
+    where: { id: uuids.customer1 },
     update: {},
     create: {
-      id: 'customer1',
+      id: uuids.customer1,
       company_id: company1.id,
       name: 'Empresa ABC Ltda',
       email: 'contato@empresaabc.com.br',
@@ -290,10 +308,10 @@ async function main() {
   });
 
   const customer2 = await prisma.customers.upsert({
-    where: { id: 'customer2' },
+    where: { id: uuids.customer2 },
     update: {},
     create: {
-      id: 'customer2',
+      id: uuids.customer2,
       company_id: company1.id,
       name: 'Pedro Henrique Martins',
       email: 'pedro.martins@email.com',
@@ -304,10 +322,10 @@ async function main() {
   });
 
   const customer3 = await prisma.customers.upsert({
-    where: { id: 'customer3' },
+    where: { id: uuids.customer3 },
     update: {},
     create: {
-      id: 'customer3',
+      id: uuids.customer3,
       company_id: company2.id,
       name: 'Startup Innovation',
       email: 'hello@startupinnovation.com',
@@ -320,10 +338,10 @@ async function main() {
   // 8. Criar Purchases
   console.log('Criando compras...');
   const purchase1 = await prisma.purchases.upsert({
-    where: { id: 'purchase1' },
+    where: { id: uuids.purchase1 },
     update: {},
     create: {
-      id: 'purchase1',
+      id: uuids.purchase1,
       company_id: company1.id,
       user_id: managerUser.id,
       supplier_id: supplier1.id,
@@ -333,10 +351,10 @@ async function main() {
   });
 
   const purchase2 = await prisma.purchases.upsert({
-    where: { id: 'purchase2' },
+    where: { id: uuids.purchase2 },
     update: {},
     create: {
-      id: 'purchase2',
+      id: uuids.purchase2,
       company_id: company2.id,
       user_id: normalUser.id,
       supplier_id: supplier3.id,
@@ -393,10 +411,10 @@ async function main() {
   // 10. Criar Sales
   console.log('Criando vendas...');
   const sale1 = await prisma.sales.upsert({
-    where: { id: 'sale1' },
+    where: { id: uuids.sale1 },
     update: {},
     create: {
-      id: 'sale1',
+      id: uuids.sale1,
       company_id: company1.id,
       user_id: adminUser.id,
       customer_id: customer1.id,
@@ -406,10 +424,10 @@ async function main() {
   });
 
   const sale2 = await prisma.sales.upsert({
-    where: { id: 'sale2' },
+    where: { id: uuids.sale2 },
     update: {},
     create: {
-      id: 'sale2',
+      id: uuids.sale2,
       company_id: company1.id,
       user_id: managerUser.id,
       customer_id: customer2.id,
@@ -419,10 +437,10 @@ async function main() {
   });
 
   const sale3 = await prisma.sales.upsert({
-    where: { id: 'sale3' },
+    where: { id: uuids.sale3 },
     update: {},
     create: {
-      id: 'sale3',
+      id: uuids.sale3,
       company_id: company2.id,
       user_id: normalUser.id,
       customer_id: customer3.id,
