@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build --builder swc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -36,7 +36,9 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.4.0",
+    "@nestjs/platform-socket.io": "^10.4.22",
     "@nestjs/swagger": "^7.4.2",
+    "@nestjs/websockets": "^10.4.22",
     "@prisma/client": "^5.20.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
@@ -69,7 +71,9 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.0",
-    "typescript-eslint": "^8.33.0"
+    "typescript-eslint": "^8.33.0",
+    "@swc/core": "^1.7.26",
+    "@swc/cli": "^0.4.0"
   },
   "jest": {
     "moduleFileExtensions": [
