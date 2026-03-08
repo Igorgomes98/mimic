@@ -7,11 +7,21 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import {
+  BulkCreateProductDto,
+  BulkCreateProductResultDto,
+} from './dto/bulk-create-product.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('products')
@@ -58,5 +68,28 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Produto não encontrado' })
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
+  }
+
+  @Post('bulk')
+  @ApiOperation({ summary: 'Importar produtos em lote (bulk insert)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Resultado da importação em lote',
+    type: BulkCreateProductResultDto,
+  })
+  bulkCreate(
+    @Body() bulkCreateDto: BulkCreateProductDto,
+  ): Promise<BulkCreateProductResultDto> {
+    return this.productsService.bulkCreate(bulkCreateDto);
+  }
+
+  @Get('lookup')
+  @ApiOperation({ summary: 'Buscar produtos por nome (para validação CSV)' })
+  @ApiResponse({ status: 200, description: 'Lista de produtos encontrados' })
+  findByName(
+    @Query('name') name: string,
+    @Query('company_id') companyId: string,
+  ) {
+    return this.productsService.findByName(name, companyId);
   }
 }

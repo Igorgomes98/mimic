@@ -12,11 +12,11 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./fornecedores.component.scss']
 })
 export class FornecedoresComponent implements OnInit {
-  searchTerm: string = '';
+  searchTerm = '';
   suppliers: Supplier[] = [];
-  loading: boolean = false;
-  showModal: boolean = false;
-  isEditMode: boolean = false;
+  loading = false;
+  showModal = false;
+  isEditMode = false;
 
   // Formulário de fornecedor
   supplierForm: any = {

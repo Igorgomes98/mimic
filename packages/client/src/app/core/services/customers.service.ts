@@ -33,6 +33,27 @@ export interface UpdateCustomerDto {
   address?: string;
 }
 
+export interface BulkCustomerItem {
+  name: string;
+  email?: string;
+  phone?: string;
+  document?: string;
+  address?: string;
+}
+
+export interface BulkCreateCustomerDto {
+  company_id: string;
+  customers: BulkCustomerItem[];
+}
+
+export interface BulkCreateResult {
+  total: number;
+  success: number;
+  failed: number;
+  created: Customer[];
+  errors: { index: number; error: string; data: BulkCustomerItem }[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -72,5 +93,12 @@ export class CustomersService {
    */
   delete(id: string): Observable<void> {
     return this.apiService.delete<void>(`customers/${id}`);
+  }
+
+  /**
+   * Importar clientes em lote (bulk insert)
+   */
+  bulkCreate(data: BulkCreateCustomerDto): Observable<BulkCreateResult> {
+    return this.apiService.post<BulkCreateResult>('customers/bulk', data);
   }
 }

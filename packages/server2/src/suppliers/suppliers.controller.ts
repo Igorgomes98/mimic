@@ -7,11 +7,21 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { SuppliersService } from './suppliers.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import {
+  BulkCreateSupplierDto,
+  BulkCreateSupplierResultDto,
+} from './dto/bulk-create-supplier.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('suppliers')
@@ -55,5 +65,28 @@ export class SuppliersController {
   @ApiResponse({ status: 200, description: 'Fornecedor deletado com sucesso' })
   remove(@Param('id') id: string) {
     return this.suppliersService.remove(id);
+  }
+
+  @Post('bulk')
+  @ApiOperation({ summary: 'Importar fornecedores em lote (bulk insert)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Resultado da importação em lote',
+    type: BulkCreateSupplierResultDto,
+  })
+  bulkCreate(
+    @Body() bulkCreateDto: BulkCreateSupplierDto,
+  ): Promise<BulkCreateSupplierResultDto> {
+    return this.suppliersService.bulkCreate(bulkCreateDto);
+  }
+
+  @Get('lookup')
+  @ApiOperation({ summary: 'Buscar fornecedores por nome (para validação CSV)' })
+  @ApiResponse({ status: 200, description: 'Lista de fornecedores encontrados' })
+  findByName(
+    @Query('name') name: string,
+    @Query('company_id') companyId: string,
+  ) {
+    return this.suppliersService.findByName(name, companyId);
   }
 }

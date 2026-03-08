@@ -6,10 +6,10 @@
     </div>
     <div class="header-actions">
       <button class="btn-import" (click)="importExcel()">
-        <i class="fas fa-file-excel"></i> Importar Excel
+        <span class="material-symbols-outlined">upload_file</span> Importar Excel
       </button>
       <button class="btn-primary" (click)="addNewSupplier()">
-        <i class="fas fa-plus"></i> Novo Fornecedor
+        <span class="material-symbols-outlined">add</span> Novo Fornecedor
       </button>
     </div>
   </div>
@@ -17,7 +17,7 @@
   <!-- Busca -->
   <div class="search-section">
     <div class="search-box">
-      <i class="fas fa-search"></i>
+      <span class="material-symbols-outlined">search</span>
       <input 
         type="text" 
         placeholder="Buscar por nome, email ou CNPJ..."
@@ -47,19 +47,19 @@
         <tr *ngFor="let supplier of filteredSuppliers">
           <td class="supplier-name">{{ supplier.name }}</td>
           <td>
-            <i class="fas fa-envelope"></i> {{ supplier.email || '-' }}
+            <span class="material-symbols-outlined">email</span> {{ supplier.email || '-' }}
           </td>
           <td>
-            <i class="fas fa-phone"></i> {{ supplier.phone || '-' }}
+            <span class="material-symbols-outlined">phone</span> {{ supplier.phone || '-' }}
           </td>
           <td>{{ supplier.contact_name || '-' }}</td>
           <td>{{ supplier.address || '-' }}</td>
           <td class="actions">
             <button class="btn-icon edit" (click)="editSupplier(supplier)">
-              <i class="fas fa-edit"></i>
+              <span class="material-symbols-outlined">edit</span>
             </button>
             <button class="btn-icon delete" (click)="deleteSupplier(supplier)">
-              <i class="fas fa-trash"></i>
+              <span class="material-symbols-outlined">delete</span>
             </button>
           </td>
         </tr>
@@ -67,7 +67,7 @@
     </table>
     
     <div class="empty-state" *ngIf="!loading && filteredSuppliers.length === 0">
-      <i class="fas fa-truck"></i>
+      <span class="material-symbols-outlined">local_shipping</span>
       <p>Nenhum fornecedor encontrado</p>
     </div>
   </div>
@@ -79,7 +79,7 @@
     <div class="modal-header">
       <h2>{{ isEditMode ? 'Editar Fornecedor' : 'Novo Fornecedor' }}</h2>
       <button class="btn-close" (click)="closeModal()">
-        <i class="fas fa-times"></i>
+        <span class="material-symbols-outlined">close</span>
       </button>
     </div>
     

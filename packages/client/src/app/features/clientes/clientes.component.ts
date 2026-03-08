@@ -1,22 +1,33 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CustomersService, Customer } from '../../core/services/customers.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  CustomersService,
+  Customer,
+  BulkCustomerItem,
+} from '../../core/services/customers.service';
 import { AuthService } from '../auth/auth.service';
+import {
+  ImportCsvDialogComponent,
+  ImportCsvDialogConfig,
+  ImportCsvDialogResult,
+} from '../../shared/components/import-csv-dialog/import-csv-dialog.component';
+import { CsvColumn } from '../../shared/services/csv-parser.service';
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatDialogModule],
   templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.scss']
+  styleUrls: ['./clientes.component.scss'],
 })
 export class ClientesComponent implements OnInit {
-  searchTerm: string = '';
+  searchTerm = '';
   customers: Customer[] = [];
-  loading: boolean = false;
-  showModal: boolean = false;
-  isEditMode: boolean = false;
+  loading = false;
+  showModal = false;
+  isEditMode = false;
 
   // Formulário de cliente
   customerForm: any = {
@@ -29,9 +40,19 @@ export class ClientesComponent implements OnInit {
     company_id: '' // Será preenchido com o ID da empresa do usuário logado
   };
 
+  // Configuração das colunas para importação CSV
+  readonly csvColumns: CsvColumn[] = [
+    { key: 'name', header: 'Nome', required: true, type: 'string' },
+    { key: 'email', header: 'Email', required: false, type: 'email' },
+    { key: 'phone', header: 'Telefone', required: false, type: 'string' },
+    { key: 'document', header: 'CPF/CNPJ', required: false, type: 'string' },
+    { key: 'address', header: 'Endereco', required: false, type: 'string' },
+  ];
+
   constructor(
     private customersService: CustomersService,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -160,7 +181,71 @@ export class ClientesComponent implements OnInit {
     };
   }
 
-  importExcel(): void {
-    alert('Funcionalidade de importar Excel em desenvolvimento');
+  /**
+   * Abrir diálogo de importação CSV
+   */
+  importCsv(): void {
+    const config: ImportCsvDialogConfig = {
+      title: 'Importar Clientes via CSV',
+      entityName: 'Cliente',
+      columns: this.csvColumns,
+      templateFilename: 'modelo_clientes.csv',
+    };
+
+    const dialogRef = this.dialog.open(ImportCsvDialogComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      data: config,
+      disableClose: true,
+    });
+
+    dialogRef
+      .afterClosed()
+      .subscribe((result: ImportCsvDialogResult<BulkCustomerItem>) => {
+        if (result?.confirmed && result.data.length > 0) {
+          this.processCsvImport(result.data);
+        }
+      });
+  }
+
+  /**
+   * Processar importação CSV
+   */
+  private processCsvImport(customers: BulkCustomerItem[]): void {
+    const companyId = this.authService.getCompanyId();
+    if (!companyId) {
+      alert('Erro: Empresa não identificada');
+      return;
+    }
+
+    this.loading = true;
+    this.customersService
+      .bulkCreate({
+        company_id: companyId,
+        customers,
+      })
+      .subscribe({
+        next: (result) => {
+          this.loading = false;
+          const message = `Importação concluída!\n` +
+            `Total: ${result.total}\n` +
+            `Sucesso: ${result.success}\n` +
+            `Falhas: ${result.failed}`;
+          alert(message);
+
+          if (result.success > 0) {
+            this.loadCustomers();
+          }
+
+          if (result.errors.length > 0) {
+            console.error('Erros na importação:', result.errors);
+          }
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error('Erro na importação:', error);
+          alert('Erro ao importar clientes. Verifique o console para mais detalhes.');
+        },
+      });
   }
 }

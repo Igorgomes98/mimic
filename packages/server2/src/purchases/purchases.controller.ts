@@ -8,10 +8,19 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { PurchasesService } from './purchases.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
+import {
+  BulkCreatePurchaseDto,
+  BulkCreatePurchaseResultDto,
+} from './dto/bulk-create-purchase.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('purchases')
@@ -55,5 +64,18 @@ export class PurchasesController {
   @ApiResponse({ status: 200, description: 'Compra deletada com sucesso' })
   remove(@Param('id') id: string) {
     return this.purchasesService.remove(id);
+  }
+
+  @Post('bulk')
+  @ApiOperation({ summary: 'Importar compras em lote (bulk insert)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Resultado da importação em lote',
+    type: BulkCreatePurchaseResultDto,
+  })
+  bulkCreate(
+    @Body() bulkCreateDto: BulkCreatePurchaseDto,
+  ): Promise<BulkCreatePurchaseResultDto> {
+    return this.purchasesService.bulkCreate(bulkCreateDto);
   }
 }

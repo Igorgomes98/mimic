@@ -10,8 +10,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./estoque.component.scss']
 })
 export class EstoqueComponent {
-  searchTerm: string = '';
-  sortBy: string = '';
+  searchTerm = '';
+  sortBy = '';
 
   // Dados mockados
   stockItems = [

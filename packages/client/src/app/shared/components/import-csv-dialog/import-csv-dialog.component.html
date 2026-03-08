@@ -1,0 +1,178 @@
+<h2 mat-dialog-title>
+  <mat-icon>upload_file</mat-icon>
+  {{ config.title }}
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <!-- File Upload Section -->
+  <div class="upload-section" *ngIf="!fileSelected">
+    <div class="upload-area">
+      <mat-icon class="upload-icon">cloud_upload</mat-icon>
+      <p>Arraste um arquivo CSV ou clique para selecionar</p>
+      <input
+        type="file"
+        accept=".csv"
+        (change)="onFileSelected($event)"
+        #fileInput
+        hidden
+      />
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <mat-icon>folder_open</mat-icon>
+        Selecionar Arquivo
+      </button>
+    </div>
+
+    <div class="template-section">
+      <p>Não sabe o formato? Baixe o modelo:</p>
+      <button mat-stroked-button color="accent" (click)="downloadTemplate()">
+        <mat-icon>download</mat-icon>
+        Baixar Modelo CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-section" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Processando arquivo...</p>
+  </div>
+
+  <!-- Preview Table -->
+  <div class="preview-section" *ngIf="fileSelected && !loading">
+    <!-- Summary -->
+    <div class="summary-bar">
+      <span class="summary-item">
+        <strong>Total:</strong> {{ getSummary().total }} registros
+      </span>
+      <span class="summary-item valid">
+        <mat-icon>check_circle</mat-icon>
+        <strong>Válidos:</strong> {{ getSummary().valid }}
+      </span>
+      <span class="summary-item invalid" *ngIf="getSummary().invalid > 0">
+        <mat-icon>error</mat-icon>
+        <strong>Com erros:</strong> {{ getSummary().invalid }}
+      </span>
+      <span class="summary-item">
+        <strong>Selecionados:</strong> {{ getSummary().selected }}
+      </span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <table mat-table [dataSource]="rows">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              [checked]="areAllSelected()"
+              [indeterminate]="areSomeSelected()"
+              (change)="toggleAllSelection()"
+            ></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox
+              [checked]="row.isSelected"
+              (change)="toggleRowSelection(row)"
+              [disabled]="!row.validation.isValid"
+            ></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Dynamic Data Columns -->
+        <ng-container *ngFor="let column of config.columns" [matColumnDef]="column.key">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ column.header }}
+            <span class="required-marker" *ngIf="column.required">*</span>
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let row"
+            [class.has-error]="getFieldError(row, column.key)"
+            [matTooltip]="getFieldError(row, column.key) || ''"
+            (dblclick)="startEditing(row.rowIndex, column.key)"
+          >
+            <ng-container *ngIf="!isEditing(row.rowIndex, column.key)">
+              {{ row.data[column.key] || '-' }}
+              <mat-icon class="error-icon" *ngIf="getFieldError(row, column.key)">
+                error_outline
+              </mat-icon>
+            </ng-container>
+            <mat-form-field *ngIf="isEditing(row.rowIndex, column.key)" appearance="outline" class="inline-edit">
+              <input
+                matInput
+                [(ngModel)]="row.data[column.key]"
+                (blur)="stopEditing(row)"
+                (keyup.enter)="stopEditing(row)"
+                              />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <mat-icon
+              *ngIf="row.validation.isValid"
+              class="status-valid"
+              matTooltip="Pronto para importar"
+            >
+              check_circle
+            </mat-icon>
+            <mat-icon
+              *ngIf="!row.validation.isValid"
+              class="status-invalid"
+              [matTooltip]="getRowErrors(row)"
+            >
+              error
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let row">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeRow(row.rowIndex)"
+              matTooltip="Remover linha"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [class.row-invalid]="!row.validation.isValid"
+          [class.row-selected]="row.isSelected"
+        ></tr>
+      </table>
+    </div>
+
+    <!-- Change file button -->
+    <div class="change-file">
+      <button mat-stroked-button (click)="fileSelected = false; rows = []">
+        <mat-icon>refresh</mat-icon>
+        Selecionar outro arquivo
+      </button>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="!canConfirm()"
+    (click)="confirm()"
+  >
+    <mat-icon>check</mat-icon>
+    Confirmar Importação ({{ getValidSelectedRows().length }})
+  </button>
+</mat-dialog-actions>

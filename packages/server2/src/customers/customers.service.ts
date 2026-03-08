@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import {
+  BulkCreateCustomerDto,
+  BulkCreateResultDto,
+} from './dto/bulk-create-customer.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -72,5 +76,71 @@ export class CustomersService {
     return this.prisma.customers.delete({
       where: { id },
     });
+  }
+
+  /**
+   * Buscar cliente por nome (para lookup no CSV)
+   */
+  async findByName(name: string, companyId: string) {
+    return this.prisma.customers.findMany({
+      where: {
+        name: {
+          equals: name,
+          mode: 'insensitive',
+        },
+        company_id: companyId,
+      },
+    });
+  }
+
+  /**
+   * Importação em lote de clientes
+   */
+  async bulkCreate(
+    bulkCreateDto: BulkCreateCustomerDto,
+  ): Promise<BulkCreateResultDto> {
+    const { company_id, customers } = bulkCreateDto;
+    const results: BulkCreateResultDto = {
+      total: customers.length,
+      success: 0,
+      failed: 0,
+      created: [],
+      errors: [],
+    };
+
+    for (let i = 0; i < customers.length; i++) {
+      const customerData = customers[i];
+
+      try {
+        const created = await this.prisma.customers.create({
+          data: {
+            company_id,
+            name: customerData.name,
+            email: customerData.email,
+            phone: customerData.phone,
+            document: customerData.document,
+            address: customerData.address,
+            is_active: true,
+            created_at: new Date(),
+            updated_at: new Date(),
+          },
+          include: {
+            company: true,
+          },
+        });
+
+        results.created.push(created);
+        results.success++;
+      } catch (error) {
+        results.failed++;
+        results.errors.push({
+          index: i,
+          error: error instanceof Error ? error.message : 'Erro desconhecido',
+          data: customerData,
+        });
+      }
+    }
+
+    return results;
   }
 }

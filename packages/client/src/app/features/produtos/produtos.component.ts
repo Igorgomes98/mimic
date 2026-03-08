@@ -13,15 +13,15 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./produtos.component.scss']
 })
 export class ProdutosComponent implements OnInit {
-  searchTerm: string = '';
-  selectedType: string = '';
-  selectedSupplier: string = '';
+  searchTerm = '';
+  selectedType = '';
+  selectedSupplier = '';
   
   products: Product[] = [];
   suppliers: Supplier[] = [];
-  loading: boolean = false;
-  showModal: boolean = false;
-  isEditMode: boolean = false;
+  loading = false;
+  showModal = false;
+  isEditMode = false;
   
   // Formulário de produto
   productForm: any = {

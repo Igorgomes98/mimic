@@ -14,7 +14,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./vendas.component.scss']
 })
 export class VendasComponent implements OnInit {
-  searchTerm: string = '';
+  searchTerm = '';
   sales: Sale[] = [];
   customers: Customer[] = [];
   products: Product[] = [];
@@ -23,7 +23,7 @@ export class VendasComponent implements OnInit {
   // Modal state
   showModal = false;
   isEditMode = false;
-  currentSaleId: string = '';
+  currentSaleId = '';
 
   // Formulário mestre
   saleForm: any = {

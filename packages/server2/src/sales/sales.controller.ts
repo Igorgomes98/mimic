@@ -8,10 +8,19 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
+import {
+  BulkCreateSaleDto,
+  BulkCreateSaleResultDto,
+} from './dto/bulk-create-sale.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('sales')
@@ -55,5 +64,18 @@ export class SalesController {
   @ApiResponse({ status: 200, description: 'Venda deletada com sucesso' })
   remove(@Param('id') id: string) {
     return this.salesService.remove(id);
+  }
+
+  @Post('bulk')
+  @ApiOperation({ summary: 'Importar vendas em lote (bulk insert)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Resultado da importação em lote',
+    type: BulkCreateSaleResultDto,
+  })
+  bulkCreate(
+    @Body() bulkCreateDto: BulkCreateSaleDto,
+  ): Promise<BulkCreateSaleResultDto> {
+    return this.salesService.bulkCreate(bulkCreateDto);
   }
 }

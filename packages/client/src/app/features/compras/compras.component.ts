@@ -14,7 +14,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./compras.component.scss']
 })
 export class ComprasComponent implements OnInit {
-  searchTerm: string = '';
+  searchTerm = '';
   purchases: Purchase[] = [];
   suppliers: Supplier[] = [];
   products: Product[] = [];
@@ -23,7 +23,7 @@ export class ComprasComponent implements OnInit {
   // Modal state
   showModal = false;
   isEditMode = false;
-  currentPurchaseId: string = '';
+  currentPurchaseId = '';
 
   // Formulário mestre
   purchaseForm: any = {
