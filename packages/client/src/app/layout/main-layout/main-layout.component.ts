@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AuthService, User } from '../../features/auth/auth.service';
+import { LayoutService } from '../../core/services/layout.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -17,14 +18,33 @@ import { AuthService, User } from '../../features/auth/auth.service';
 })
 export class MainLayoutComponent implements OnInit {
   currentUser: User | null = null;
-
-  constructor(private authService: AuthService) {}
+  isSidebarCollapsed = false;
+  isMobileSidebarOpen = false;
+  
+  private authService = inject(AuthService);
+  private layoutService = inject(LayoutService);
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
+    
+    this.layoutService.isSidebarCollapsed$.subscribe(collapsed => {
+      this.isSidebarCollapsed = collapsed;
+    });
+
+    this.layoutService.isMobileSidebarOpen$.subscribe(isOpen => {
+      this.isMobileSidebarOpen = isOpen;
+    });
+  }
+
+  toggleMobileSidebar(): void {
+    this.layoutService.toggleMobileSidebar();
+  }
+
+  closeMobileSidebar(): void {
+    this.layoutService.closeMobileSidebar();
   }
 
   logout(): void {

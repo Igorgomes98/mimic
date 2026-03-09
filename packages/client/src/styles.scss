@@ -1,5 +1,6 @@
 // src/styles.scss
 @use '@angular/material' as mat;
+@use './styles/shared/scss/index' as *;
 
 // Incluir core styles do Angular Material
 @include mat.core();
@@ -18,8 +19,6 @@ $my-theme: mat.m2-define-light-theme((
 
 @include mat.all-component-themes($my-theme);
 
-@import 'styles/variables';
-@import 'styles/mixins';
 @import 'styles/reset';
 @import 'styles/typography';
 * {

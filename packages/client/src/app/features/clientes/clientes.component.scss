@@ -1,7 +1,7 @@
 .clientes-container {
   padding: 24px;
   background-color: #f8f9fa;
-  min-height: 100vh;
+  height: 100%;
 }
 
 .page-header {
@@ -9,6 +9,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
   
   h1 {
     font-size: 1.75rem;
@@ -27,6 +33,11 @@
     display: flex;
     gap: 12px;
     
+    @media (max-width: 768px) {
+      width: 100%;
+      flex-direction: column;
+    }
+    
     button {
       padding: 10px 20px;
       border: none;
@@ -35,6 +46,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       transition: all 0.2s ease;
       font-size: 0.95rem;
@@ -104,6 +116,8 @@
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .clientes-table {

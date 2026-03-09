@@ -1,88 +1,182 @@
+@use '../../../styles/shared/scss/index' as *;
+
 .main-layout {
   display: flex;
-  width: 100%;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: $bg-light;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+  
+  &.sidebar-collapsed {
+    .main-content {
+      margin-left: $sidebar-collapsed-width;
+    }
+  }
+
+  &.mobile-sidebar-open {
+    overflow: hidden; // Prevent scrolling when sidebar is open
+  }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: $z-index-sidebar - 1;
+  transition: opacity 0.3s ease;
+  display: block;
+
+  @media (min-width: 992px) {
+    display: none;
+  }
 }
 
 .main-content {
   flex: 1;
+  margin-left: $sidebar-width;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  margin-left: 250px;
-  transition: margin-left 0.3s ease;
-  min-height: 100vh;
-  
-  @media (max-width: 768px) {
-    margin-left: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+
+  @media (max-width: 991px) {
+    margin-left: 0 !important;
   }
 }
 
 .top-header {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 16px 24px;
+  height: $header-height;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid $neutral-200;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  
+  padding: 0 $spacing-xl;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-header;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 991px) {
+    padding: 0 $spacing-md;
+    height: 60px;
+  }
+
   .header-left {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+
+    .btn-toggle-mobile {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: $text-primary;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+      z-index: 10;
+
+      @media (max-width: 991px) {
+        display: flex;
+      }
+
+      &:hover {
+        background-color: $neutral-100;
+      }
+
+      .material-symbols-outlined {
+        font-size: 24px;
+      }
+    }
+
     .page-title {
       font-size: 1.25rem;
-      font-weight: 600;
-      color: #1e293b;
+      font-weight: 700;
+      color: $text-primary;
       margin: 0;
+      
+      @media (max-width: 480px) {
+        font-size: 1.1rem;
+      }
     }
   }
-  
+
   .header-right {
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      
-      .user-details {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        
-        .user-name {
-          font-weight: 600;
-          color: #1e293b;
-          font-size: 0.875rem;
-        }
-        
-        .user-company {
-          font-size: 0.75rem;
-          color: #64748b;
-        }
-      }
-      
-      .btn-logout {
-        padding: 8px 12px;
-        border: none;
-        border-radius: 8px;
-        background-color: #fee2e2;
-        color: #991b1b;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-        
-        &:hover {
-          background-color: #fecaca;
-          transform: translateY(-2px);
-        }
-      }
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+
+    @media (max-width: 480px) {
+      gap: $spacing-sm;
+    }
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .user-company {
+      font-size: 0.75rem;
+      color: $text-secondary;
+    }
+  }
+
+  .btn-logout {
+    @include btn-ghost;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    
+    @media (max-width: 480px) {
+      width: 36px;
+      height: 36px;
+    }
+
+    .material-symbols-outlined {
+      font-size: 1.25rem;
     }
   }
 }
 
 .content-area {
+  padding: $spacing-xl;
   flex: 1;
-  overflow-y: auto;
+  background-color: $bg-light;
   width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 991px) {
+    padding: $spacing-md;
+  }
 }

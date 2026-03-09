@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { SalesService, Sale, CreateSaleDto, SaleItem } from '../../core/services/sales.service';
 import { CustomersService, Customer } from '../../core/services/customers.service';
 import { ProductsService, Product } from '../../core/services/products.service';
@@ -9,7 +10,7 @@ import { AuthService } from '../auth/auth.service';
 @Component({
   selector: 'app-vendas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './vendas.component.html',
   styleUrls: ['./vendas.component.scss']
 })

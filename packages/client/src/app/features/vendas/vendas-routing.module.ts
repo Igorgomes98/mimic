@@ -6,6 +6,14 @@ const routes: Routes = [
   {
     path: '',
     component: VendasComponent
+  },
+  {
+    path: 'nova',
+    loadComponent: () => import('./pos/pos.component').then(m => m.PosComponent)
+  },
+  {
+    path: 'scanner',
+    loadComponent: () => import('./mobile-scanner/mobile-scanner.component').then(m => m.MobileScannerComponent)
   }
 ];
 

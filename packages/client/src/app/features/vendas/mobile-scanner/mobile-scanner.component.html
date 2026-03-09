@@ -1,0 +1,39 @@
+<div class="scanner-container">
+  <div class="scanner-header">
+    <h2>MIMIC Scanner</h2>
+    <div class="connection-status" [class.connected]="isConnected">
+      <span class="status-dot"></span>
+      {{ isConnected ? 'Pareado' : 'Conectando...' }}
+    </div>
+  </div>
+
+  <div class="camera-wrapper">
+    <div *ngIf="isCameraActive" class="camera-lens">
+      <div id="mobile-reader" class="html5-qr-reader"></div>
+      <div class="scan-overlay">
+        <div class="corner top-left"></div>
+        <div class="corner top-right"></div>
+        <div class="corner bottom-left"></div>
+        <div class="corner bottom-right"></div>
+        <div class="scan-laser" [class.active]="isConnected"></div>
+      </div>
+    </div>
+    
+    <div *ngIf="!isCameraActive" class="camera-placeholder">
+      <span class="material-symbols-outlined icon-large">qr_code_scanner</span>
+      <p>Câmera pausada ou sem permissão</p>
+    </div>
+  </div>
+
+  <div class="scanner-footer">
+    <div class="last-scan" [class.show]="lastScannedCode">
+      <span class="material-symbols-outlined">check_circle</span>
+      <p>Item enviado: <strong>{{ lastScannedCode }}</strong></p>
+    </div>
+
+    <!-- Hidden audio element for beep -->
+    <audio #beepSound preload="auto">
+      <source src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU" type="audio/wav">
+    </audio>
+  </div>
+</div>
