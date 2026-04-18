@@ -1,0 +1,103 @@
+<div class="fiado-container">
+  <div class="header">
+    <h1>Contas a Receber (Fiado)</h1>
+    <div class="summary">
+      <div class="total-box">
+        <span class="label">Total a Receber:</span>
+        <span class="value">{{ formatCurrency(getTotalOwed()) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <p>Carregando...</p>
+  </div>
+
+  <div *ngIf="!loading && accountsReceivable.length === 0" class="empty-state">
+    <p>✅ Não há contas pendentes!</p>
+  </div>
+
+  <div *ngIf="!loading && accountsReceivable.length > 0" class="accounts-list">
+    <div *ngFor="let account of accountsReceivable" class="account-card">
+      <div class="customer-info">
+        <h3>{{ account.customer.name }}</h3>
+        <span class="badge" [class.badge-cliente]="account.customer.customer_type === 'CLIENTE'"
+                           [class.badge-revendedor]="account.customer.customer_type === 'REVENDEDOR'">
+          {{ account.customer.customer_type }}
+        </span>
+      </div>
+      
+      <div class="customer-contact">
+        <span *ngIf="account.customer.phone">📱 {{ account.customer.phone }}</span>
+      </div>
+
+      <div class="debt-summary">
+        <div class="metric">
+          <span class="metric-label">Total Vendido:</span>
+          <span class="metric-value">{{ formatCurrency(account.totalOwed + account.totalPaid) }}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Já Pago:</span>
+          <span class="metric-value success">{{ formatCurrency(account.totalPaid) }}</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Deve:</span>
+          <span class="metric-value danger">{{ formatCurrency(account.totalOwed) }}</span>
+        </div>
+      </div>
+
+      <button class="btn-details" (click)="viewCustomerDetails(account)">
+        Ver Detalhes
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes -->
+  <div *ngIf="selectedCustomer" class="modal-overlay" (click)="closeDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Detalhes - {{ selectedCustomer.customer.name }}</h2>
+        <button class="btn-close" (click)="closeDetails()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="sales-list">
+          <h3>Vendas Pendentes:</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Total</th>
+                <th>Pago</th>
+                <th>Deve</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sale of selectedCustomer.sales">
+                <td>{{ formatDate(sale.date) }}</td>
+                <td>{{ formatCurrency(sale.total) }}</td>
+                <td class="success">{{ formatCurrency(sale.paid) }}</td>
+                <td class="danger">{{ formatCurrency(sale.owed) }}</td>
+                <td>
+                  <span class="status-badge" [class.status-pendente]="sale.payment_status === 'PENDENTE'"
+                                             [class.status-parcial]="sale.payment_status === 'PARCIAL'">
+                    {{ sale.payment_status }}
+                  </span>
+                </td>
+                <td>
+                  <button *ngIf="sale.owed > 0" class="btn-pay" (click)="registerPayment(sale.id)">
+                    Registrar Pagamento
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,64 +1,96 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { ReportsService, DashboardMetrics, LowStockProduct, RecentSale, SalesVsPurchases } from '../../core/services/reports.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
   currentDate: Date = new Date();
+  loading = true;
+  
+  metrics: DashboardMetrics | null = null;
+  lowStockProducts: LowStockProduct[] = [];
+  recentSales: RecentSale[] = [];
+  chartData: SalesVsPurchases[] = [];
+
+  constructor(
+    private reportsService: ReportsService,
+    private authService: AuthService
+  ) {}
   
   ngOnInit(): void {
-    // Inicialização do componente
+    this.loadDashboardData();
   }
 
-  // Dados mockados do dashboard
-  metrics = {
-    billing: {
-      value: 'R$ 45.231,89',
-      change: '+15.3% em relação ao mês anterior',
-      icon: 'dollar-sign'
-    },
-    purchases: {
-      value: 'R$ 23.456,78',
-      change: '+8.2% em relação ao mês anterior',
-      icon: 'shopping-bag'
-    },
-    profit: {
-      value: 'R$ 21.775,11',
-      change: '+18.9% em relação ao mês anterior',
-      icon: 'trending-up'
-    },
-    margin: {
-      value: '32.4%',
-      change: '+2.1% em relação ao mês anterior',
-      icon: 'percent'
+  loadDashboardData(): void {
+    const companyId = this.authService.getCompanyId();
+    if (!companyId) {
+      console.error('Company ID não encontrado');
+      this.loading = false;
+      return;
     }
-  };
 
-  // Dados do gráfico Vendas vs Compras (últimos 30 dias)
-  chartData = {
-    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
-    sales: [3500, 2200, 2800, 2300],
-    purchases: [1800, 1000, 4500, 3200]
-  };
+    this.loading = true;
 
-  // Produtos com estoque baixo
-  lowStockProducts = [
-    { name: 'Produto A', sku: 'SKU-001', stock: 3 },
-    { name: 'Produto B', sku: 'SKU-002', stock: 5 },
-    { name: 'Produto C', sku: 'SKU-003', stock: 1 }
-  ];
+    // Carregar métricas
+    this.reportsService.getDashboardMetrics(companyId).subscribe({
+      next: (data) => {
+        this.metrics = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar métricas:', err);
+      }
+    });
 
-  // Últimas vendas
-  recentSales = [
-    { id: 'V-001', customer: 'João Silva', date: '2024-10-15', value: 'R$ 1.234,56' },
-    { id: 'V-002', customer: 'Maria Santos', date: '2024-10-15', value: 'R$ 890,00' },
-    { id: 'V-003', customer: 'Pedro Costa', date: '2024-10-14', value: 'R$ 2.150,00' },
-    { id: 'V-004', customer: 'Ana Oliveira', date: '2024-10-14', value: 'R$ 567,89' },
-    { id: 'V-005', customer: 'Carlos Lima', date: '2024-10-13', value: 'R$ 1.890,50' }
-  ];
+    // Carregar produtos com estoque baixo
+    this.reportsService.getLowStockProducts(companyId).subscribe({
+      next: (data) => {
+        this.lowStockProducts = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar produtos com estoque baixo:', err);
+      }
+    });
+
+    // Carregar vendas recentes
+    this.reportsService.getRecentSales(companyId, 5).subscribe({
+      next: (data) => {
+        this.recentSales = data;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar vendas recentes:', err);
+      }
+    });
+
+    // Carregar dados do gráfico
+    this.reportsService.getSalesVsPurchases(companyId).subscribe({
+      next: (data) => {
+        this.chartData = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados do gráfico:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  formatCurrency(value: number): string {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  }
+
+  formatPercentage(value: number): string {
+    return `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
+  }
+
+  formatDate(date: string): string {
+    return new Date(date).toLocaleDateString('pt-BR');
+  }
 }

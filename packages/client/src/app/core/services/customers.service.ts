@@ -10,6 +10,8 @@ export interface Customer {
   phone?: string;
   document?: string;
   address?: string;
+  customer_type?: string;
+  birthdate?: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -22,6 +24,8 @@ export interface CreateCustomerDto {
   phone?: string;
   document?: string;
   address?: string;
+  customer_type?: string;
+  birthdate?: string;
 }
 
 export interface UpdateCustomerDto {

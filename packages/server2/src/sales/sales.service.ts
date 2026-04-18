@@ -13,34 +13,76 @@ export class SalesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createSaleDto: CreateSaleDto) {
-    return this.prisma.sales.create({
-      data: {
-        company_id: createSaleDto.company_id,
-        user_id: createSaleDto.user_id,
-        customer_id: createSaleDto.customer_id,
-        payment_method: createSaleDto.payment_method,
-        notes: createSaleDto.notes,
-        sale_date: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
-        items: {
-          create: createSaleDto.items.map(item => ({
-            product_id: item.product_id,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        },
-      },
-      include: {
-        company: true,
-        user: true,
-        customer: true,
-        items: {
-          include: {
-            product: true,
+    // Calcular total dos itens
+    const itemsTotal = createSaleDto.items.reduce((sum, item) => 
+      sum + (item.price * item.quantity), 0
+    );
+    
+    // Calcular total final (itens + frete)
+    const totalAmount = itemsTotal + (createSaleDto.freight_cost || 0);
+
+    // Usar transação para garantir atomicidade
+    return this.prisma.$transaction(async (tx) => {
+      // Criar a venda
+      const sale = await tx.sales.create({
+        data: {
+          company_id: createSaleDto.company_id,
+          user_id: createSaleDto.user_id,
+          customer_id: createSaleDto.customer_id,
+          payment_method: createSaleDto.payment_method,
+          payment_status: createSaleDto.payment_status || 'PENDENTE',
+          freight_cost: createSaleDto.freight_cost || 0,
+          freight_paid_by: createSaleDto.freight_paid_by || 'CLIENTE',
+          total_amount: totalAmount,
+          notes: createSaleDto.notes,
+          sale_date: new Date(),
+          created_at: new Date(),
+          updated_at: new Date(),
+          items: {
+            create: createSaleDto.items.map(item => ({
+              product_id: item.product_id,
+              quantity: item.quantity,
+              price: item.price,
+            })),
           },
         },
-      },
+        include: {
+          company: true,
+          user: true,
+          customer: true,
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      // Atualizar estoque e criar movimentações
+      for (const item of createSaleDto.items) {
+        // Reduzir quantidade em estoque
+        await tx.products.update({
+          where: { id: item.product_id },
+          data: {
+            stock_quantity: {
+              decrement: item.quantity,
+            },
+          },
+        });
+
+        // Registrar movimentação de estoque
+        await tx.stock_movements.create({
+          data: {
+            product_id: item.product_id,
+            quantity: -item.quantity,
+            type: 'SAIDA',
+            reason: `Venda #${sale.id}`,
+            reference_id: sale.id,
+          },
+        });
+      }
+
+      return sale;
     });
   }
 

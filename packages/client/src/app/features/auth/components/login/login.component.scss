@@ -1,15 +1,16 @@
 // src/app/components/login/login.component.scss
+@use '../../../../../styles/shared/scss/index' as *;
 
 .login-container {
   display: flex;
-  height: 100%;
+  min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 // Seção Lateral Esquerda
 .login-sidebar {
   flex: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, $primary-600 0%, $primary-700 100%);
   color: white;
   display: flex;
   align-items: center;
@@ -92,31 +93,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  background: #f8fafc;
+  padding: $spacing-xl;
+  background: $bg-light;
 
   .form-container {
     width: 100%;
     max-width: 400px;
     background: white;
-    padding: 3rem;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: $spacing-3xl;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-2xl;
   }
 
   .form-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: $spacing-xl;
     
     h2 {
       font-size: 2rem;
-      color: #1a202c;
-      margin-bottom: 0.5rem;
+      color: $text-primary;
+      margin-bottom: $spacing-sm;
       font-weight: 700;
     }
     
     p {
-      color: #718096;
+      color: $text-secondary;
       font-size: 1rem;
     }
   }
@@ -140,26 +141,27 @@
       
       input {
         width: 100%;
-        padding: 1rem 3rem 1rem 1rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
+        padding: $spacing-md $spacing-3xl $spacing-md $spacing-md;
+        border: 2px solid $neutral-200;
+        border-radius: $radius-lg;
         font-size: 1rem;
         transition: all 0.3s ease;
-        background: #fff;
+        background: white;
+        color: $text-primary;
         
         &:focus {
           outline: none;
-          border-color: #667eea;
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          border-color: $primary-600;
+          box-shadow: 0 0 0 3px rgba($primary-600, 0.1);
         }
         
         &.error {
-          border-color: #e53e3e;
-          box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+          border-color: $error-600;
+          box-shadow: 0 0 0 3px rgba($error-600, 0.1);
         }
         
         &::placeholder {
-          color: #a0aec0;
+          color: $neutral-400;
         }
       }
       
@@ -191,8 +193,8 @@
     }
     
     .error-message {
-      margin-top: 0.5rem;
-      color: #e53e3e;
+      margin-top: $spacing-xs;
+      color: $error-600;
       font-size: 0.85rem;
       font-weight: 500;
     }
@@ -209,14 +211,14 @@
       align-items: center;
       cursor: pointer;
       font-size: 0.9rem;
-      color: #4a5568;
+      color: $text-primary;
       
       input[type="checkbox"] {
         display: none;
         
         &:checked + .checkmark {
-          background: #667eea;
-          border-color: #667eea;
+          background: $primary-600;
+          border-color: $primary-600;
           
           &::after {
             display: block;
@@ -227,9 +229,9 @@
       .checkmark {
         width: 18px;
         height: 18px;
-        border: 2px solid #e2e8f0;
-        border-radius: 4px;
-        margin-right: 0.5rem;
+        border: 2px solid $neutral-200;
+        border-radius: $radius-xs;
+        margin-right: $spacing-sm;
         position: relative;
         transition: all 0.3s ease;
         
@@ -247,25 +249,25 @@
     }
     
     .forgot-password {
-      color: #667eea;
+      color: $primary-600;
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: 600;
       transition: color 0.3s ease;
       
       &:hover {
-        color: #5a67d8;
+        color: $primary-700;
       }
     }
   }
   
   .login-button {
     width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: $spacing-md;
+    background: $primary-600;
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: $radius-lg;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -274,8 +276,9 @@
     overflow: hidden;
     
     &:hover:not(:disabled) {
+      background: $primary-700;
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 10px 25px rgba($primary-600, 0.3);
     }
     
     &:disabled {
@@ -305,16 +308,16 @@
     margin-top: 2rem;
     
     p {
-      color: #718096;
+      color: $text-secondary;
       font-size: 0.9rem;
       
       .signup-link {
-        color: #667eea;
+        color: $primary-600;
         text-decoration: none;
         font-weight: 600;
         
         &:hover {
-          color: #5a67d8;
+          color: $primary-700;
         }
       }
     }

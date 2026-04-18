@@ -18,6 +18,7 @@ export const routes: Routes = [
       {path: 'estoque', loadChildren: () => import('@features/estoque/estoque.module').then(m => m.EstoqueModule)},
       {path: 'clientes', loadChildren: () => import('@features/clientes/clientes.module').then(m => m.ClientesModule)},
       {path: 'fornecedores', loadChildren: () => import('@features/fornecedores/fornecedores.module').then(m => m.FornecedoresModule)},
+      {path: 'fiado', loadComponent: () => import('@features/fiado/fiado.component').then(m => m.FiadoComponent)},
     ]
   },
   {path: '**', redirectTo: '/auth/login'}

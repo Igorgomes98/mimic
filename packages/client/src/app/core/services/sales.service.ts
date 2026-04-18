@@ -41,6 +41,9 @@ export interface CreateSaleDto {
   user_id: string;
   customer_id: string;
   payment_method: string;
+  payment_status?: string;
+  freight_cost?: number;
+  freight_paid_by?: string;
   notes?: string;
   items: {
     product_id: string;

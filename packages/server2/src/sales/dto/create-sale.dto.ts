@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsUUID, IsArray, ValidateNested, IsNumber, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsUUID, IsArray, ValidateNested, IsNumber, Min, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
+
+export enum PaymentStatus {
+  PAGO = 'PAGO',
+  PENDENTE = 'PENDENTE',
+  PARCIAL = 'PARCIAL',
+}
+
+export enum FreightPayer {
+  CLIENTE = 'CLIENTE',
+  EMPRESA = 'EMPRESA',
+}
 
 export class SaleItemDto {
   @ApiProperty({ example: 'uuid-do-produto' })
@@ -39,6 +50,22 @@ export class CreateSaleDto {
   @IsString()
   @IsNotEmpty()
   payment_method: string;
+
+  @ApiProperty({ enum: PaymentStatus, example: PaymentStatus.PENDENTE, required: false })
+  @IsOptional()
+  @IsEnum(PaymentStatus)
+  payment_status?: PaymentStatus;
+
+  @ApiProperty({ example: 15.50, required: false })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  freight_cost?: number;
+
+  @ApiProperty({ enum: FreightPayer, example: FreightPayer.CLIENTE, required: false })
+  @IsOptional()
+  @IsEnum(FreightPayer)
+  freight_paid_by?: FreightPayer;
 
   @ApiProperty({ example: 'Observações da venda', required: false })
   @IsOptional()

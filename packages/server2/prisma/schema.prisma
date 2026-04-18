@@ -9,9 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model roles {
@@ -86,51 +85,78 @@ model suppliers {
 }
 
 model products {
-  id             String           @id @default(uuid())
-  company_id     String
-  supplier_id    String?
-  name           String
-  description    String?
-  sku            String?          @unique
-  price          Decimal
-  is_active      Boolean          @default(true)
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @default(now())
-  company        companies          @relation(fields: [company_id], references: [id])
-  supplier       suppliers?        @relation(fields: [supplier_id], references: [id])
-  sales_items    sales_items[]
-  purchase_items purchases_items[]
+  id              String            @id @default(uuid())
+  company_id      String
+  supplier_id     String?
+  name            String
+  description     String?
+  sku             String?           @unique
+  price           Decimal
+  stock_quantity  Int               @default(0)
+  min_stock_level Int               @default(5)
+  is_active       Boolean           @default(true)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @default(now())
+  company         companies         @relation(fields: [company_id], references: [id])
+  supplier        suppliers?        @relation(fields: [supplier_id], references: [id])
+  sales_items     sales_items[]
+  purchase_items  purchases_items[]
+  stock_movements stock_movements[]
+}
+
+enum CustomerType {
+  CLIENTE
+  REVENDEDOR
 }
 
 model customers {
-  id         String   @id @default(uuid())
-  company_id String
-  name       String
-  email      String?
-  phone      String?
-  document   String?
-  address    String?
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  company    companies  @relation(fields: [company_id], references: [id])
-  sales      sales[]
+  id            String       @id @default(uuid())
+  company_id    String
+  name          String
+  email         String?
+  phone         String?
+  document      String?
+  address       String?
+  customer_type CustomerType @default(CLIENTE)
+  birthdate     DateTime?
+  is_active     Boolean      @default(true)
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @default(now())
+  company       companies    @relation(fields: [company_id], references: [id])
+  sales         sales[]
+  payments      payments[]
+}
+
+enum PaymentStatus {
+  PAGO
+  PENDENTE
+  PARCIAL
+}
+
+enum FreightPayer {
+  CLIENTE
+  EMPRESA
 }
 
 model sales {
-  id             String      @id @default(uuid())
-  company_id     String
-  user_id        String
-  customer_id    String
-  sale_date      DateTime    @default(now())
-  notes          String?
-  payment_method String
-  created_at     DateTime    @default(now())
-  updated_at     DateTime    @default(now())
-  company        companies     @relation(fields: [company_id], references: [id])
-  user           users        @relation(fields: [user_id], references: [id])
-  customer       customers    @relation(fields: [customer_id], references: [id])
-  items          sales_items[]
+  id              String         @id @default(uuid())
+  company_id      String
+  user_id         String
+  customer_id     String
+  sale_date       DateTime       @default(now())
+  notes           String?
+  payment_method  String
+  payment_status  PaymentStatus  @default(PENDENTE)
+  freight_cost    Decimal?       @default(0)
+  freight_paid_by FreightPayer?  @default(CLIENTE)
+  total_amount    Decimal        @default(0)
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @default(now())
+  company         companies      @relation(fields: [company_id], references: [id])
+  user            users          @relation(fields: [user_id], references: [id])
+  customer        customers      @relation(fields: [customer_id], references: [id])
+  items           sales_items[]
+  payments        payments[]
 }
 
 model sales_items {
@@ -167,4 +193,34 @@ model purchases_items {
   cost          Decimal
   purchase      purchases @relation(fields: [purchases_id], references: [id])
   product       products  @relation(fields: [product_id], references: [id])
+}
+
+enum MovementType {
+  ENTRADA
+  SAIDA
+  AJUSTE
+  DEVOLUCAO
+}
+
+model stock_movements {
+  id          String       @id @default(uuid())
+  product_id  String
+  quantity    Int
+  type        MovementType
+  reason      String?
+  reference_id String?
+  created_at  DateTime     @default(now())
+  product     products     @relation(fields: [product_id], references: [id])
+}
+
+model payments {
+  id          String    @id @default(uuid())
+  sale_id     String
+  customer_id String
+  amount      Decimal
+  payment_date DateTime @default(now())
+  notes       String?
+  created_at  DateTime  @default(now())
+  sale        sales     @relation(fields: [sale_id], references: [id])
+  customer    customers @relation(fields: [customer_id], references: [id])
 }

@@ -39,6 +39,9 @@ export class PosComponent implements OnInit, OnDestroy {
   saleForm = {
     customer_id: '',
     payment_method: '',
+    payment_status: 'PENDENTE',
+    freight_cost: 0,
+    freight_paid_by: 'CLIENTE',
     notes: ''
   };
 
@@ -263,8 +266,20 @@ export class PosComponent implements OnInit, OnDestroy {
     return this.saleItems.reduce((acc, item) => acc + this.getItemSubtotal(item), 0);
   }
 
+  get totalWithFreight() {
+    return this.totalSale + Number(this.saleForm.freight_cost || 0);
+  }
+
   formatCurrency(value: number) {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  }
+
+  editItemPrice(index: number) {
+    const item = this.saleItems[index];
+    const newPrice = prompt(`Editar preço de ${item.product?.name}`, item.price.toString());
+    if (newPrice && !isNaN(Number(newPrice))) {
+      this.saleItems[index].price = Number(newPrice);
+    }
   }
 
   playBeep() {
@@ -291,6 +306,7 @@ export class PosComponent implements OnInit, OnDestroy {
 
   finalizeSale() {
     if (this.saleItems.length === 0 || !this.saleForm.customer_id || !this.saleForm.payment_method) {
+      alert('Preencha cliente e forma de pagamento');
       return;
     }
 
@@ -302,6 +318,10 @@ export class PosComponent implements OnInit, OnDestroy {
       user_id: userId || '',
       customer_id: this.saleForm.customer_id,
       payment_method: this.saleForm.payment_method,
+      payment_status: this.saleForm.payment_status as any,
+      freight_cost: Number(this.saleForm.freight_cost) || 0,
+      freight_paid_by: this.saleForm.freight_paid_by as any,
+      notes: this.saleForm.notes,
       items: this.saleItems.map(i => ({
          product_id: i.product_id,
          quantity: i.quantity,
@@ -313,7 +333,7 @@ export class PosComponent implements OnInit, OnDestroy {
       next: () => {
         alert('Venda finalizada com sucesso!');
         this.html5QrCode?.stop().catch(() => {});
-        this.router.navigate(['/vendas']);
+        this.router.navigate(['/app/vendas']);
       },
       error: err => {
         alert('Erro ao finalizar venda');

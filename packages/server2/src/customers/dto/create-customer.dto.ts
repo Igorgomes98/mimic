@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsUUID, IsEmail } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsUUID, IsEmail, IsEnum, IsDateString } from 'class-validator';
+
+export enum CustomerType {
+  CLIENTE = 'CLIENTE',
+  REVENDEDOR = 'REVENDEDOR',
+}
 
 export class CreateCustomerDto {
   @ApiProperty({ example: 'uuid-da-company' })
@@ -31,4 +36,14 @@ export class CreateCustomerDto {
   @IsOptional()
   @IsString()
   address?: string;
+
+  @ApiProperty({ enum: CustomerType, example: CustomerType.CLIENTE, required: false })
+  @IsOptional()
+  @IsEnum(CustomerType)
+  customer_type?: CustomerType;
+
+  @ApiProperty({ example: '1990-01-15T00:00:00.000Z', required: false })
+  @IsOptional()
+  @IsDateString()
+  birthdate?: string;
 }

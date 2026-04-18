@@ -70,18 +70,37 @@
            <button (click)="updateQuantity(i, 1)">+</button>
          </div>
          <div class="item-price">
-           {{ formatCurrency(getItemSubtotal(item)) }}
+           <small>Unit: {{ formatCurrency(item.price) }}</small>
+           <strong>{{ formatCurrency(getItemSubtotal(item)) }}</strong>
          </div>
-         <button class="btn-remove" (click)="removeItem(i)">
+         <button class="btn-edit-price" (click)="editItemPrice(i)" title="Editar Preço">
+             <span class="material-symbols-outlined">edit</span>
+         </button>
+         <button class="btn-remove" (click)="removeItem(i)" title="Remover">
              <span class="material-symbols-outlined">close</span>
          </button>
       </div>
     </div>
 
     <div class="cart-summary">
+      <div class="subtotal-row">
+        <span>Subtotal (Produtos):</span>
+        <span>{{ formatCurrency(totalSale) }}</span>
+      </div>
+
+      <div class="freight-section">
+        <div class="freight-inputs">
+          <input type="number" class="sharp-input" [(ngModel)]="saleForm.freight_cost" placeholder="Valor do Frete" min="0" step="0.01">
+          <select class="sharp-input" [(ngModel)]="saleForm.freight_paid_by">
+            <option value="CLIENTE">Cliente Paga</option>
+            <option value="EMPRESA">Empresa Paga</option>
+          </select>
+        </div>
+      </div>
+
       <div class="total-row">
-        <span>Total:</span>
-        <span class="massive-total">{{ formatCurrency(totalSale) }}</span>
+        <span>Total Final:</span>
+        <span class="massive-total">{{ formatCurrency(totalWithFreight) }}</span>
       </div>
 
       <div class="checkout-form">
@@ -94,6 +113,14 @@
           <option value="">Forma de Pagamento *</option>
           <option *ngFor="let method of paymentMethods" [value]="method.value">{{ method.label }}</option>
         </select>
+
+        <select class="sharp-input" [(ngModel)]="saleForm.payment_status">
+          <option value="PAGO">Pago</option>
+          <option value="PENDENTE">Pendente (Fiado)</option>
+          <option value="PARCIAL">Parcialmente Pago</option>
+        </select>
+
+        <textarea class="sharp-input" [(ngModel)]="saleForm.notes" placeholder="Observações (opcional)" rows="2"></textarea>
 
         <button class="btn-checkout" (click)="finalizeSale()" [disabled]="saleItems.length === 0 || !saleForm.customer_id || !saleForm.payment_method">
            Finalizar Venda

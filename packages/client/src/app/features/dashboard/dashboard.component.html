@@ -6,50 +6,67 @@
     </div>
   </div>
 
-  <!-- Cards de métricas -->
-  <div class="metrics-grid">
-    <div class="metric-card">
-      <div class="metric-header">
-        <span class="metric-icon">
-          <span class="material-symbols-outlined">attach_money</span>
-        </span>
-        <span class="metric-label">Faturamento do Mês</span>
-      </div>
-      <div class="metric-value">{{ metrics.billing.value }}</div>
-      <div class="metric-change positive">{{ metrics.billing.change }}</div>
-    </div>
+  <div *ngIf="loading" class="loading-state">
+    <p>Carregando dados...</p>
+  </div>
 
-    <div class="metric-card">
-      <div class="metric-header">
-        <span class="metric-icon">
-          <span class="material-symbols-outlined">shopping_cart</span>
-        </span>
-        <span class="metric-label">Total em Compras</span>
+  <div *ngIf="!loading && metrics">
+    <!-- Cards de métricas -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-icon">
+            <span class="material-symbols-outlined">attach_money</span>
+          </span>
+          <span class="metric-label">Faturamento do Mês</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.billing.value) }}</div>
+        <div class="metric-change" [class.positive]="metrics.billing.change >= 0" [class.negative]="metrics.billing.change < 0">
+          {{ formatPercentage(metrics.billing.change) }} vs mês anterior
+        </div>
+        <div class="metric-detail">{{ metrics.billing.count }} vendas</div>
       </div>
-      <div class="metric-value">{{ metrics.purchases.value }}</div>
-      <div class="metric-change positive">{{ metrics.purchases.change }}</div>
-    </div>
 
-    <div class="metric-card">
-      <div class="metric-header">
-        <span class="metric-icon">
-          <span class="material-symbols-outlined">trending_up</span>
-        </span>
-        <span class="metric-label">Lucro do Mês</span>
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-icon">
+            <span class="material-symbols-outlined">shopping_cart</span>
+          </span>
+          <span class="metric-label">Total em Compras</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.purchases.value) }}</div>
       </div>
-      <div class="metric-value">{{ metrics.profit.value }}</div>
-      <div class="metric-change positive">{{ metrics.profit.change }}</div>
-    </div>
 
-    <div class="metric-card">
-      <div class="metric-header">
-        <span class="metric-icon">
-          <span class="material-symbols-outlined">percent</span>
-        </span>
-        <span class="metric-label">Margem de Lucro Média</span>
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-icon">
+            <span class="material-symbols-outlined">trending_up</span>
+          </span>
+          <span class="metric-label">Lucro do Mês</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.profit.value) }}</div>
       </div>
-      <div class="metric-value">{{ metrics.margin.value }}</div>
-      <div class="metric-change positive">{{ metrics.margin.change }}</div>
+
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-icon">
+            <span class="material-symbols-outlined">percent</span>
+          </span>
+          <span class="metric-label">Margem de Lucro</span>
+        </div>
+        <div class="metric-value">{{ metrics.margin.value.toFixed(1) }}%</div>
+      </div>
+
+      <div class="metric-card receivables-card">
+        <div class="metric-header">
+          <span class="metric-icon">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </span>
+          <span class="metric-label">A Receber (Fiado)</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.receivables.value) }}</div>
+        <a routerLink="/app/fiado" class="metric-link">Ver detalhes →</a>
+      </div>
     </div>
   </div>
 
@@ -60,22 +77,23 @@
         <h2>Vendas vs Compras (Últimos 30 dias)</h2>
       </div>
       <div class="panel-content">
-        <div class="chart-container">
+        <div *ngIf="chartData.length === 0" class="empty-state">
+          <p>Sem dados para exibir</p>
+        </div>
+        <div *ngIf="chartData.length > 0" class="chart-container">
           <div class="mock-chart">
             <div class="chart-bars-group">
-              <ng-container *ngFor="let label of chartData.labels; let i = index">
-                <div class="bar-group">
-                  <div class="bar sales-bar" [style.height]="(chartData.sales[i] / 5000) * 100 + '%'">
-                    <span class="bar-label">{{ chartData.sales[i] }}</span>
-                  </div>
-                  <div class="bar purchases-bar" [style.height]="(chartData.purchases[i] / 5000) * 100 + '%'">
-                    <span class="bar-label">{{ chartData.purchases[i] }}</span>
-                  </div>
+              <div class="bar-group" *ngFor="let data of chartData">
+                <div class="bar sales-bar" [style.height]="(data.sales / 5000) * 100 + '%'">
+                  <span class="bar-label">{{ formatCurrency(data.sales) }}</span>
                 </div>
-              </ng-container>
+                <div class="bar purchases-bar" [style.height]="(data.purchases / 5000) * 100 + '%'">
+                  <span class="bar-label">{{ formatCurrency(data.purchases) }}</span>
+                </div>
+              </div>
             </div>
             <div class="chart-labels">
-              <span *ngFor="let label of chartData.labels">{{ label }}</span>
+              <span *ngFor="let data of chartData">{{ data.week }}</span>
             </div>
             <div class="chart-legend">
               <div class="legend-item">
@@ -98,13 +116,16 @@
         <h2><span class="material-symbols-outlined warning-icon">warning</span> Produtos com Estoque Baixo</h2>
       </div>
       <div class="panel-content">
-        <div class="low-stock-list">
+        <div *ngIf="lowStockProducts.length === 0" class="empty-state">
+          <p>✅ Todos os produtos estão com estoque adequado!</p>
+        </div>
+        <div *ngIf="lowStockProducts.length > 0" class="low-stock-list">
           <div class="low-stock-item" *ngFor="let product of lowStockProducts">
             <div class="product-info">
               <div class="product-name">{{ product.name }}</div>
-              <div class="product-sku">{{ product.sku }}</div>
+              <div class="product-sku">SKU: {{ product.sku || 'N/A' }}</div>
             </div>
-            <div class="stock-badge">{{ product.stock }} unidades</div>
+            <div class="stock-badge">{{ product.stock_quantity }} / {{ product.min_stock_level }} unidades</div>
           </div>
         </div>
       </div>
@@ -116,10 +137,12 @@
         <h2>Últimas Vendas</h2>
       </div>
       <div class="panel-content">
-        <table class="data-table">
+        <div *ngIf="recentSales.length === 0" class="empty-state">
+          <p>Nenhuma venda registrada ainda</p>
+        </div>
+        <table *ngIf="recentSales.length > 0" class="data-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Cliente</th>
               <th>Data</th>
               <th>Valor</th>
@@ -127,10 +150,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let sale of recentSales">
-              <td>{{ sale.id }}</td>
-              <td>{{ sale.customer }}</td>
-              <td>{{ sale.date }}</td>
-              <td>{{ sale.value }}</td>
+              <td>{{ sale.customer.name }}</td>
+              <td>{{ formatDate(sale.sale_date) }}</td>
+              <td>{{ formatCurrency(sale.total_amount) }}</td>
             </tr>
           </tbody>
         </table>
